@@ -1,0 +1,62 @@
+<nav>
+  <ul>
+    <li><a href="#" class="logo">
+        <img height="30px" onclick="toggleSidebar()"
+          src="https://lh3.googleusercontent.com/p/AF1QipOI7WW5FtaeY9fEjt0Nn7CIKbF57BSv5qmds_Rk=w960-h960-n-o-v1"
+          alt="">
+        <span class="nav-item">DashBoard</span>
+      </a></li>
+    <li><a href="#">
+        <i class="fas fa-home"></i>
+        <span class="nav-item">DashBoard</span>
+      </a></li>
+    <li><a href="">
+        <i class="fas fa-user"></i>
+        <span class="nav-item">Donations</span>
+      </a></li>
+    <li><a href="">
+        <i class="fas fa-wallet"></i>
+        <span class="nav-item">Donors</span>
+      </a></li>
+    <li><a href="">
+        <i class="fas fa-chart-bar"></i>
+        <span class="nav-item">Reports</span>
+      </a></li>
+    <li><a href="">
+        <i class="fas fa-tasks"></i>
+        <span class="nav-item">Campaigns</span>
+      </a></li>
+    <li><a href="">
+        <i class="fas fa-cog"></i>
+        <span class="nav-item">Settings</span>
+      </a></li>
+    <li><a href=" {% url 'logout' %} ">
+        <i class="fas fa-sign-out-alt"></i>
+        <span class="nav-item">Logout</span>
+      </a></li>
+
+  </ul>
+  <li style="list-style: none;">
+    <!-- <i class="fas fa-cog"></i> -->
+    <span style="font-size: 14px; margin-left: 10px;">{{username}}</span>
+  </li>
+</nav>
+
+<script>
+
+  var istoggle = true;
+  function toggleSidebar() {
+    elem = document.getElementsByTagName('nav')[0];
+    if (istoggle) {
+      elem.style.width = "90px";
+      console.log("is toggle if")
+      istoggle = false;
+    }
+    else {
+      elem.style.width = "280px";
+      console.log("is toggle else")
+      istoggle = true;
+
+    }
+  }
+</script>
