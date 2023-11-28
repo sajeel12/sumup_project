@@ -126,6 +126,7 @@ def sumup_callback(request):
             print('in  userdb ')
             user_db = User.objects.create_user(username, email)
 
+        print('trying to login')
         login(request,  user_db)
         # return HttpResponse(f'Logged in as {username}')
         print('redi to dashboard')
