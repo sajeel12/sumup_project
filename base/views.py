@@ -127,7 +127,8 @@ def sumup_callback(request):
             user_db = User.objects.create_user(username, email)
 
         print('trying to login')
-        login(request,  user_db)
+        authenticated_user = authenticate(request, username=username, email=email)
+        login(request,  authenticated_user)
         # return HttpResponse(f'Logged in as {username}')
         print('redi to dashboard')
         return redirect('dashboard')
