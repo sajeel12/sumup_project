@@ -19,7 +19,7 @@ try:
     secret_file = os.path.join('../secret_db/', 'secrets.json')
     secret_file = open(secret_file)
     secret_file = json.load(secret_file)
-
+    print( secret_file,  "file found")
 except FileNotFoundError:
     print("file not found")
 
