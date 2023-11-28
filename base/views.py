@@ -127,6 +127,7 @@ def sumup_callback(request):
 
         login(request,  user_db)
         # return HttpResponse(f'Logged in as {username}')
+        print('redi to dashboard')
         return redirect('dashboard')
     else:
         print('user is none')
