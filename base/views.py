@@ -113,15 +113,17 @@ def sumup_callback(request):
 
     # Authenticate or create the user in your Django application
     if username is not None:
+        print(116)
         user_db = User.objects.filter(username=username).first()
         if user_db is None:
+            print('in  userdb ')
             user_db = User.objects.create_user(username, email)
 
         login(request,  user_db)
         # return HttpResponse(f'Logged in as {username}')
         return redirect('dashboard')
     else:
-
+        print('user is none')
         return HttpResponse('User authentication failed')
 
 
