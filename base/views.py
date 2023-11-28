@@ -112,6 +112,7 @@ def sumup_callback(request):
     print(username, ' + ',email)
 
     # Authenticate or create the user in your Django application
+    user_db = None
     if username is not None:
         try:
             print(116)
