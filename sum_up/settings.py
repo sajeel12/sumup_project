@@ -16,7 +16,7 @@ import json
 
 secret_file = None
 try:
-    secret_file = os.path.join('../', 'secrets.json')
+    secret_file = os.path.join('../secret_db', 'secrets.json')
     secret_file = open(secret_file)
     secret_file = json.load(secret_file)
 
