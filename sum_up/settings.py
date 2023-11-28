@@ -12,6 +12,17 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import json
+
+secret_file = None
+try:
+    secret_file = os.path.join('../', 'secrets.json')
+    secret_file = open(secret_file)
+    secret_file = json.load(secret_file)
+
+except FileNotFoundError:
+    print("file not found")
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +32,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-s7ii89qqejpxx@n5f3a&^8g7-nks@kld3=eypxbzls_lmmj@az'
+SECRET_KEY = secret_file['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -134,6 +145,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #
 # SumUp settings 
-SUMUP_CLIENT_ID = 'cc_classic_YZht69epvmyOmNNVh09lwJg9vHyuC'
-SUMUP_CLIENT_SECRET = 'cc_sk_classic_iNWSDKsHYrIKDzHU0az9iToymVYoDSUVpmzGVVxRIhIMxyj3tm'
-SUMUP_REDIRECT_URI = 'http://127.0.0.1:8000/sumup/callback'
+SUMUP_CLIENT_ID = secret_file['SUMUP_CLIENT_ID']
+SUMUP_CLIENT_SECRET = secret_file['SUMUP_CLIENT_SECRET']
+SUMUP_REDIRECT_URI = secret_file['SUMUP_REDIRECT_URI']
