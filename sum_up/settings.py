@@ -95,6 +95,26 @@ DATABASES = {
     }
 }
 
+# ///////////////// for bitnami lightsail server Maria db////////////////////
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mysql.connector.django',
+#         'NAME': 'sumup_test',
+#         'USER': 'sajeel',
+#         'PASSWORD': 'sajeel',
+#         'HOST': '127.0.0.1',  # Change to the appropriate host if MariaDB is on a different server
+#         'PORT': '3306',      # Default MariaDB port
+#         'OPTIONS': {
+#             'charset': 'utf8mb4',
+#             'collation': 'utf8mb4_unicode_ci',
+#         },
+#     }
+    
+# }
+
+
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
