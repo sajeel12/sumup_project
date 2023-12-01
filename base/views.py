@@ -147,10 +147,14 @@ def get_total_transactions(request):
     print(access_token, '<-- access token in get total transactionss ')
     if access_token :
         try:
-            transactionss_info_url = 'https://api.sumup.com/v0.1/me/transactions/history'
+            transactionss_info_url = 'https://api.sumup.com/v0.1/me/transactions/history/'
             headers = {'Authorization': f'Bearer {access_token}'}
-            transactions_info_response = requests.get(transactionss_info_url, headers=headers)
+            params = {
+                'limit': 500,
+            }
+            transactions_info_response = requests.get(transactionss_info_url, headers=headers, params=params)
             transactions = transactions_info_response.json()
+            print(transactions)
             return JsonResponse({ "data": transactions})
         except:
             pass
