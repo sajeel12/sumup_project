@@ -1,325 +1,339 @@
 {% extends "main.html" %} {% block content %}
 {% load static %}
-<section class="main">
-    <img id="transaction_loading" src=" {% static 'images/loading.gif' %} " height="25px" style="display: none;" alt="">
 
-    <div class="main-top">
-        <!-- <h5> {{username}} </h5> -->
-        <!-- <i class="fas fa-user-cog"></i> -->
-    </div>
-    <div class="main-skills">
-        <div class="card">
+<img id="transaction_loading" src=" {% static 'images/loading.gif' %} " height="25px" style="display: none;" alt="">
 
-            <h3>Total Donations</h3>
-            <p id="total_transactions">--</p>
+<div class="main-top">
+    <!-- <h5> {{username}} </h5> -->
 
-        </div>
-        <div class="card">
-            <!-- <i class="fas fa-laptop-code"></i> -->
-            <h3>Donation Last Week</h3>
-            <p id="transaction_last_week">--</p>
+</div>
 
-        </div>
-        <div class="card">
-            <h3>Donations last 30 days</h3>
-            <p id="transaction_last_month">--</p>
-        </div>
+{% if request.user.sumup_access_token != Null %}
+
+<div class="main-skills">
+    <div class="card">
+
+        <h3>Total Donations</h3>
+        <p id="total_transactions">--</p>
 
     </div>
-    <div class="main-skills">
-        <div class="graph-card">
+    <div class="card">
+        <!-- <i class="fas fa-laptop-code"></i> -->
+        <h3>Donation Last Week</h3>
+        <p id="transaction_last_week">--</p>
 
-            <h3>Transactions </h3>
-            <select id="productSummarySelect" onchange="handleProductSummuryChange()">
+    </div>
+    <div class="card">
+        <h3>Donations last 30 days</h3>
+        <p id="transaction_last_month">--</p>
+    </div>
 
-            </select>
-            <canvas id="transactionChart" width="100" height="50"></canvas>
-        </div>
+</div>
+<div class="main-skills">
+    <div class="graph-card">
 
-        <div class="graph-card"> <!-- Bar Chart -->
+        <h3>Transactions </h3>
+        <select class="graph-select" id="productSummarySelect" onchange="handleProductSummuryChange()">
 
-            <h3>Transactions </h3>
-            <select id="productSummarySelectBar" onchange="handleProductSummuryBarChange()">
-                <option value="all">All</option>
-                <option value="lastWeek">Last Week</option>
-                <option value="last30Days">Last 30 Days</option>
-            </select>
-            <canvas id="transactionBarChart" width="100" height="50"></canvas>
-        </div>
+        </select>
+        <canvas id="transactionChart" width="100" height="50"></canvas>
+    </div>
+
+    <div class="graph-card"> <!-- Bar Chart -->
+
+        <h3>Transactions </h3>
+        <select class="graph-select" id="productSummarySelectBar" onchange="handleProductSummuryBarChange()">
+            <option value="all">All</option>
+            <option value="lastWeek">Last Week</option>
+            <option value="last30Days">Last 30 Days</option>
+        </select>
+        <canvas id="transactionBarChart" width="100" height="50"></canvas>
+    </div>
+
+</div>
+
+{% else %}
+<div class="main-skills">
+    <div class="card">
+
+        <h3>Sumup not connected </h3>
+        <a  href="{% url 'sumup_login' %}"  >
+           <b> Connect Sumup </b>
+           </a>
 
     </div>
 
-</section>
+    {% endif %}
 
 
-<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
-<script>
+    <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
+    <script>
 
 
 
-    let transaction_loading = document.getElementById('transaction_loading');
-    var transactions = [];
-    var total_transactions = [];
-    var last_week_transactions = [];
-    var last_month_transactions = [];
+        let transaction_loading = document.getElementById('transaction_loading');
+        var transactions = [];
+        var total_transactions = [];
+        var last_week_transactions = [];
+        var last_month_transactions = [];
 
-    function get_total_transactions() {
+        function get_total_transactions() {
 
-        transaction_loading.style.display = 'block';
+            transaction_loading.style.display = 'block';
 
-        fetch("/sumup/transactions/")  // Replace with the actual URL of your Django view
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("Data received:", data);
-                transactions = data.data.items;
-                // Update the HTML on your page with the received data
-                const totalCount = Object.keys(data?.data?.items).length;
+            fetch("/sumup/transactions/")  // Replace with the actual URL of your Django view
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Data received:", data);
+                    transactions = data.data.items;
+                    // Update the HTML on your page with the received data
+                    const totalCount = Object.keys(data?.data?.items).length;
 
-                //  last week  data
-                var lastWeekStart = new Date();
-                lastWeekStart.setDate(lastWeekStart.getDate() - 7);
-                var lastWeekTransactions = data.data.items.filter(function (transaction) {
-                    var transactionDate = new Date(transaction.timestamp);
-                    return transactionDate > lastWeekStart;
+                    //  last week  data
+                    var lastWeekStart = new Date();
+                    lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+                    var lastWeekTransactions = data.data.items.filter(function (transaction) {
+                        var transactionDate = new Date(transaction.timestamp);
+                        return transactionDate > lastWeekStart;
+                    });
+                    console.log(lastWeekTransactions, 'lastWeekTransactions')
+                    const lastWeekCount = Object.keys(lastWeekTransactions).length;
+
+                    //  last 30 data
+                    var lastMonthStart = new Date();
+                    lastMonthStart.setDate(lastMonthStart.getDate() - 30);
+                    var lastMonthTransactions = data.data.items.filter(function (transaction) {
+                        var transactionDate = new Date(transaction.timestamp);
+                        return transactionDate > lastMonthStart;
+                    });
+                    console.log(lastMonthTransactions, 'lastMonthTransactions')
+                    const lastMonthCount = Object.keys(lastMonthTransactions).length;
+
+                    // setting variables
+                    total_transactions = transactions;
+                    last_week_transactions = lastWeekTransactions;
+                    last_month_transactions = lastMonthTransactions;
+
+                    //  displaying data
+                    transaction_loading.style.display = 'none'
+                    document.getElementById("total_transactions").innerHTML = totalCount;
+                    document.getElementById("transaction_last_week").innerHTML = lastWeekCount;
+                    document.getElementById("transaction_last_month").innerHTML = lastMonthCount;
+
+                    createLineChart(data?.data?.items);
+                    createBarChart(data?.data?.items);
+
+
+                    product_summury();
+
+                })
+                .catch(error => {
+                    console.error("Fetch error:", error);
                 });
-                console.log(lastWeekTransactions, 'lastWeekTransactions')
-                const lastWeekCount = Object.keys(lastWeekTransactions).length;
-
-                //  last 30 data
-                var lastMonthStart = new Date();
-                lastMonthStart.setDate(lastMonthStart.getDate() - 30);
-                var lastMonthTransactions = data.data.items.filter(function (transaction) {
-                    var transactionDate = new Date(transaction.timestamp);
-                    return transactionDate > lastMonthStart;
-                });
-                console.log(lastMonthTransactions, 'lastMonthTransactions')
-                const lastMonthCount = Object.keys(lastMonthTransactions).length;
-
-                // setting variables
-                total_transactions = transactions;
-                last_week_transactions = lastWeekTransactions;
-                last_month_transactions = lastMonthTransactions;
-
-                //  displaying data
-                transaction_loading.style.display = 'none'
-                document.getElementById("total_transactions").innerHTML = totalCount;
-                document.getElementById("transaction_last_week").innerHTML = lastWeekCount;
-                document.getElementById("transaction_last_month").innerHTML = lastMonthCount;
-
-                createLineChart(data?.data?.items);
-                createBarChart(data?.data?.items);
+        }
 
 
-                product_summury();
+        get_total_transactions();
 
-            })
-            .catch(error => {
-                console.error("Fetch error:", error);
+        function product_summury() {
+            const productSummaries = transactions.map(transaction => transaction.product_summary.toLowerCase());
+
+            const uniqueProductSummaries = [...new Set(productSummaries)];
+
+            console.log(uniqueProductSummaries, 'uniqueProductSummaries')
+            // Clear existing options
+            productSummarySelect.innerHTML = '';
+            // Add a default option
+            const defaultOption = document.createElement('option');
+            defaultOption.text = 'All';
+            defaultOption.value = '';
+            productSummarySelect.add(defaultOption);
+
+            uniqueProductSummaries.forEach(summary => {
+                const option = document.createElement('option');
+                option.text = summary;
+                option.value = summary;
+                productSummarySelect.add(option);
             });
-    }
-
-
-    get_total_transactions();
-
-    function product_summury() {
-        const productSummaries = transactions.map(transaction => transaction.product_summary.toLowerCase());
-
-        const uniqueProductSummaries = [...new Set(productSummaries)];
-
-        console.log(uniqueProductSummaries, 'uniqueProductSummaries')
-        // Clear existing options
-        productSummarySelect.innerHTML = '';
-        // Add a default option
-        const defaultOption = document.createElement('option');
-        defaultOption.text = 'All';
-        defaultOption.value = '';
-        productSummarySelect.add(defaultOption);
-
-        uniqueProductSummaries.forEach(summary => {
-            const option = document.createElement('option');
-            option.text = summary;
-            option.value = summary;
-            productSummarySelect.add(option);
-        });
 
 
 
-    }
-
-
-    //============================================   chart section ===========================================
-
-    function handleProductSummuryChange() {
-        // Get the selected product summary
-        const selectedProductSummary = productSummarySelect.value;
-
-        // Filter transactions based on the selected product summary
-        const filteredTransactions = transactions.filter(transaction => {
-            return selectedProductSummary === '' || transaction.product_summary.toLowerCase() === selectedProductSummary;
-        });
-
-        // Call the modified createLineChart function with the filtered transactions
-        createLineChart(filteredTransactions);
-    }
-
-    function handleProductSummuryBarChange() {
-        // Get the selected product summary
-        const selectedProductBarSummary = productSummarySelectBar.value;
-        console.log(selectedProductBarSummary, 'selectedProductBarSummary')
-
-        // Filter transactions based on the selected product summary
-        if (selectedProductBarSummary === 'lastWeek') {
-            console.log(last_week_transactions, 'last_week_transactions')
-            createBarChart(last_week_transactions);
-        } else if (selectedProductBarSummary === 'last30Days') {
-            createBarChart(last_month_transactions);
-        } else {
-            createBarChart(total_transactions);
         }
 
 
-    }
-    let transactionChart;
-    function createLineChart(transactions) {
-        if (transactionChart) {
-            transactionChart.destroy();
+        //============================================   chart section ===========================================
+
+        function handleProductSummuryChange() {
+            // Get the selected product summary
+            const selectedProductSummary = productSummarySelect.value;
+
+            // Filter transactions based on the selected product summary
+            const filteredTransactions = transactions.filter(transaction => {
+                return selectedProductSummary === '' || transaction.product_summary.toLowerCase() === selectedProductSummary;
+            });
+
+            // Call the modified createLineChart function with the filtered transactions
+            createLineChart(filteredTransactions);
         }
 
-        const ctx = document.getElementById('transactionChart').getContext('2d');
+        function handleProductSummuryBarChange() {
+            // Get the selected product summary
+            const selectedProductBarSummary = productSummarySelectBar.value;
+            console.log(selectedProductBarSummary, 'selectedProductBarSummary')
 
-        const dateCounts = [];
-
-        transactions.forEach(transaction => {
-            const dateKey = new Date(transaction.timestamp).toLocaleDateString();
-            const existingDate = dateCounts.find(item => item.date === dateKey);
-            if (existingDate) {
-                existingDate.count += 1;
+            // Filter transactions based on the selected product summary
+            if (selectedProductBarSummary === 'lastWeek') {
+                console.log(last_week_transactions, 'last_week_transactions')
+                createBarChart(last_week_transactions);
+            } else if (selectedProductBarSummary === 'last30Days') {
+                createBarChart(last_month_transactions);
             } else {
-                dateCounts.push({
-                    date: dateKey,
-                    count: 1
-                });
+                createBarChart(total_transactions);
             }
-        });
 
-        // Extract counts to create an array
-        const countsArray = dateCounts.map(item => item.count);
-        console.log(countsArray, 'countsArray')
 
-        // 99999999999999999999999999
-        const timestamps = new Set();
-        transactions.forEach(transaction => {
-            const timestamp = new Date(transaction.timestamp).toLocaleDateString();
-            timestamps.add(timestamp);
-        });
-        const uniqueTimestampsArray = Array.from(timestamps);
+        }
+        let transactionChart;
+        function createLineChart(transactions) {
+            if (transactionChart) {
+                transactionChart.destroy();
+            }
 
-        // const labels = Object.keys(dateCounts);
-        const xValues = uniqueTimestampsArray;
-        const yValues = countsArray;
+            const ctx = document.getElementById('transactionChart').getContext('2d');
 
-        transactionChart = new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: xValues,
-                datasets: [{
-                    label: 'Number of Transactions',
-                    fill: false,
-                    lineTension: 0.3,
-                    backgroundColor: "rgba(0,0,255,1.0)",
-                    borderColor: "rgba(0,0,255,0.1)",
-                    data: yValues
-                }]
-            },
-            options: {
-                legend: { display: false },
-                scales: {
-                    yAxes: [{ ticks: { min: 0, max: 16 } }],
+            const dateCounts = [];
+
+            transactions.forEach(transaction => {
+                const dateKey = new Date(transaction.timestamp).toLocaleDateString();
+                const existingDate = dateCounts.find(item => item.date === dateKey);
+                if (existingDate) {
+                    existingDate.count += 1;
+                } else {
+                    dateCounts.push({
+                        date: dateKey,
+                        count: 1
+                    });
                 }
-            }
-        });
+            });
 
+            // Extract counts to create an array
+            const countsArray = dateCounts.map(item => item.count);
+            console.log(countsArray, 'countsArray')
 
+            // 99999999999999999999999999
+            const timestamps = new Set();
+            transactions.forEach(transaction => {
+                const timestamp = new Date(transaction.timestamp).toLocaleDateString();
+                timestamps.add(timestamp);
+            });
+            const uniqueTimestampsArray = Array.from(timestamps);
 
+            // const labels = Object.keys(dateCounts);
+            const xValues = uniqueTimestampsArray;
+            const yValues = countsArray;
 
-    }
-
-
-
-    let transactionBarChart;
-    function createBarChart(transactions) {
-        if (transactionBarChart) {
-            transactionBarChart.destroy();
-        }
-
-        const ctx = document.getElementById('transactionBarChart').getContext('2d');
-
-        const productCounts = {};
-        const colors = ['#e842ff', '#42a5f5', '#66bb6a', '#ffa726', '#ff7043', '#8d6e63'];
-
-        transactions.forEach((transaction, index) => {
-            const productSummary = transaction.product_summary.toLowerCase();
-
-            if (productCounts[productSummary]) {
-                productCounts[productSummary] += 1;
-            } else {
-                productCounts[productSummary] = 1;
-            }
-        });
-
-        const productLabels = Object.keys(productCounts);
-        const productValues = Object.values(productCounts);
-
-        const backgroundColors = colors.slice(0, productLabels.length);
-
-        transactionBarChart = new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: productLabels,  // Use productLabels array for labels
-                datasets: [{
-                    label: 'Number of Transactions',
-                    fill: false,
-                    lineTension: 0.3,
-                    backgroundColor: backgroundColors,
-                    borderColor: "rgba(0,0,255,0.1)",
-                    data: productValues,
-                    barThickness: 10
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                legend: { display: false },
-                scales: {
-                    x: {
-                        // Adjust x-axis settings as needed
-                    },
-                    y: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            autoSkip: false,
-                            beginAtZero: true,
-                            stepSize: 1
-                        }
-
+            transactionChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        label: 'Number of Transactions',
+                        fill: false,
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(0,0,255,1.0)",
+                        borderColor: "rgba(0,0,255,0.1)",
+                        data: yValues
+                    }]
+                },
+                options: {
+                    legend: { display: false },
+                    scales: {
+                        yAxes: [{ ticks: { min: 0, max: 16 } }],
                     }
                 }
+            });
+
+
+
+
+        }
+
+
+
+        let transactionBarChart;
+        function createBarChart(transactions) {
+            if (transactionBarChart) {
+                transactionBarChart.destroy();
             }
-        });
-    }
 
-</script>
+            const ctx = document.getElementById('transactionBarChart').getContext('2d');
+
+            const productCounts = {};
+            const colors = ['#e842ff', '#42a5f5', '#66bb6a', '#ffa726', '#ff7043', '#8d6e63'];
+
+            transactions.forEach((transaction, index) => {
+                const productSummary = transaction.product_summary.toLowerCase();
+
+                if (productCounts[productSummary]) {
+                    productCounts[productSummary] += 1;
+                } else {
+                    productCounts[productSummary] = 1;
+                }
+            });
+
+            const productLabels = Object.keys(productCounts);
+            const productValues = Object.values(productCounts);
+
+            const backgroundColors = colors.slice(0, productLabels.length);
+
+            transactionBarChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: productLabels,  // Use productLabels array for labels
+                    datasets: [{
+                        // label: 'Number of Transactions',
+                        fill: false,
+                        lineTension: 0.3,
+                        backgroundColor: backgroundColors,
+                        borderColor: "rgba(0,0,255,0.1)",
+                        data: productValues,
+                        barThickness: 10
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    legend: { display: false },
+                    scales: {
+                        x: {
+                            // Adjust x-axis settings as needed
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                autoSkip: false,
+                                beginAtZero: true,
+                                stepSize: 1
+                            }
+
+                        }
+                    }
+                }
+            });
+        }
+
+    </script>
 
 
-<!--  Chart Section  -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!--  Chart Section  -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
 
-{% endblock %}
+    {% endblock %}

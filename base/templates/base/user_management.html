@@ -1,0 +1,127 @@
+{% extends "main.html" %} {% block content %}
+<div class="main-top">
+    <!-- <h5> {{username}} </h5> -->
+
+</div>
+
+<div class="main-skills">
+    <div class="card" style="align-items: unset;">
+
+        <h4>Pending Account Approvals</h4>
+        <div class="card-body">
+            <table class="table" id="userTable">
+                <thead>
+                    <tr class="table-row">
+                        <th scope="col">S.No</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Country</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% comment %} {% for user in users %} {% endcomment %}
+                    <!-- <tr  >
+                        <td  scope="row">{{forloop.counter}}</td>
+                        <td>{{user.name}}</td>
+                        <td>{{user.email}}</td>
+    
+                        <td>{{user.country_for_tax_purpose}}</td>
+                        <td class="table-actions" >
+                            <button onclick="approvalAction(1)" style="background-color: rgb(0, 255, 68);color: black;" > Approve</button>
+                            <button onclick="approvalAction(0)" > Reject</button>
+                        </td>
+                        
+                    </tr> -->
+                    {% comment %} {% endfor %} {% endcomment %}
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function fetchUsers() {
+            fetch('/get-users/')  // Replace with the actual URL for your view
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Handle the JSON response data
+                    console.log(data.users);
+                    updateTable(data.users);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function updateTable(users) {
+            const tableBody = document.querySelector('#userTable tbody');
+            const table = document.querySelector('#userTable');
+
+            tableBody.innerHTML = '';  // Clear existing table rows
+            if (users.length !== 0) {
+
+
+                users.forEach((user, index) => {
+                    const row = tableBody.insertRow(index);
+                    row.insertCell(0).textContent = index + 1;
+                    row.insertCell(1).textContent = user.name;
+                    row.insertCell(2).textContent = user.email;
+                    row.insertCell(3).textContent = user.country;
+                    row.insertCell(3).innerHTML = `<td class="table-actions" >
+                            <button onclick="approvalAction(true, ${user.id} )" style="background-color: rgb(0, 255, 68);color: black;" > Approve</button>
+                            <button onclick="approvalAction(false, ${user.id})" > Reject</button>
+                        </td>
+                        `;
+
+                    // Add more cells as needed
+                });
+            }
+            else {
+                table.innerHTML = '<h5>No Pending Approvals</h5>';
+            }
+        }
+
+        // Fetch users when the page loads
+        fetchUsers();
+
+
+        function approvalAction(active, id) {
+            console.log(active, id);
+            fetch('/approve-user/', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    "active": active,
+                    "id": id
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Handle the JSON response data
+                    console.log(data);
+                    fetchUsers();
+                })
+                .catch(error => console.error('Error:', error));
+
+        }
+
+
+
+    </script>
+
+
+    {% endblock %}

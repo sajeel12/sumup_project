@@ -1,0 +1,95 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+<div class="login-form">
+    {% if page == 'signup' %}
+    <form method="post" action="">
+        {% csrf_token %}
+        <!-- <input type="text" placeholder="username" >
+        <input type="password" placeholder="password" > -->
+        <input type="text" placeholder="Name" name="name" required>
+        <!-- <input type="username" placeholder="Username" name="username" required> -->
+
+        <input type="email" placeholder="Email" name="email" required>
+        <input type="number" placeholder="Telephone" name="telephone" required>
+        <input type="text" placeholder="Organisation Name" name="organisation_name" required>
+
+        <input type="text" placeholder="Address" name="address" required>
+
+
+        <!-- <input type="text" placeholder="Country" name="country_for_tax_purpose" required> -->
+        <select class="country-select" id="country" name="country">
+            {% for country in countries %}
+            <option value="{{ country.name }}">{{ country.name }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="password" id="password" placeholder="password" name="password" required>
+        <input onchange="handlePasswordMatch()" type="password" id="confirmPassword" placeholder="confirn password"
+            name="confirmPassword" required>
+        <span id="passwordMatchStatus" style="color: red;font-size: small;"></span>
+        {% if msg %}
+        <span id="msg" style="color: red;font-size: small;"> {{msg}} </span>
+        <!-- {{ form.as_p }} -->
+        {% endif %}
+
+        <button id="submitButton" disabled type="submit" > Signup </button>
+        <!-- <p> or </p> -->
+
+        <!-- <button onclick="withsumup()" class="with-google-btn"  > Countinuou with Sum up </button> -->
+        <!-- <a class="with-google-btn" href="{% url 'sumup_login' %}">
+            <p> login with sumup </p>
+        </a> -->
+
+    </form>
+    {% endif %}
+
+    {% if page == 'login' %}
+
+    <form method="post" action="">
+        {% csrf_token %}
+
+        <input type="email" placeholder="Email" name="email" required>
+        <input type="password" id="password" placeholder="password" name="password" required>
+        {% if msg %}
+        <span id="msg" style="color: red;font-size: small;"> {{msg}} </span>
+        <!-- {{ form.as_p }} -->
+        {% endif %}
+
+        <button id="submitButton"  type="submit" > Login </button>
+
+
+    </form>
+
+    {% endif %}
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var passwordField = document.getElementById('password');
+        var confirmPasswordField = document.getElementById('confirmPassword');
+        var passwordMatchStatus = document.getElementById('passwordMatchStatus');
+        var submitButton = document.getElementById('submitButton');
+        function checkPasswordMatch() {
+            var password = passwordField.value;
+            var confirmPassword = confirmPasswordField.value;
+
+            if (password === confirmPassword) {
+                passwordMatchStatus.textContent = 'Passwords match';
+                passwordMatchStatus.style.color = 'green';
+                submitButton.disabled = false;
+            } else {
+                passwordMatchStatus.textContent = 'Passwords do not match';
+                passwordMatchStatus.style.color = 'red';
+                submitButton.disabled = true;
+            }
+        }
+
+        confirmPasswordField.addEventListener('input', checkPasswordMatch);
+    });
+</script>
+
+
+
+{% endblock content %}

@@ -53,6 +53,10 @@ INSTALLED_APPS = [
     'base',
 ]
 
+AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+    )
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -169,3 +173,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SUMUP_CLIENT_ID = secret_file['SUMUP_CLIENT_ID']
 SUMUP_CLIENT_SECRET = secret_file['SUMUP_CLIENT_SECRET']
 SUMUP_REDIRECT_URI = secret_file['SUMUP_REDIRECT_URI']
+
+
+AUTH_USER_MODEL = 'base.User'
