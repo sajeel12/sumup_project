@@ -18,7 +18,7 @@ class User(AbstractUser):
     country_for_tax_purpose = models.CharField(max_length=100, null=True)
 
     
-    sumup_access_token = models.CharField(max_length=255, null=True)
+    sumup_access_token = models.CharField(max_length=255, null=True, blank=True)
     
     is_admin = models.BooleanField(default=False)
 
