@@ -5,7 +5,45 @@
 
 </div>
 
+<div class="main-skills">
 
-<h1>this is report page</h1>
+    <div class="card">
+        <a href="{% url 'download_excel' %}"> <Button>Download Excel</Button> </a>
+        <Button>Download CSV</Button>
+    </div>
+</div>
+
+
+
+
+
+
+<script>
+    function downloadExcel() {
+        fetch('{% url "download_excel" %}')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                // Create a link element and click it to trigger the download
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'mydata.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.error('Error during fetch operation:', error);
+                // Handle the error as needed
+            });
+    }
+</script>
+
 
 {% endblock %}
