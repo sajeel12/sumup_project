@@ -182,6 +182,7 @@
         }
 
         function handleProductSummuryBarChange() {
+
             // Get the selected product summary
             const selectedProductBarSummary = productSummarySelectBar.value;
             console.log(selectedProductBarSummary, 'selectedProductBarSummary')
@@ -267,6 +268,7 @@
 
         let transactionBarChart;
         function createBarChart(transactions) {
+            console.log('create bar chart triggered')
             if (transactionBarChart) {
                 transactionBarChart.destroy();
             }
@@ -312,17 +314,17 @@
                         x: {
                             // Adjust x-axis settings as needed
                         },
-                        y: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                autoSkip: false,
-                                beginAtZero: true,
-                                stepSize: 1
-                            }
+                        // y: {
+                        //     // grid: {
+                        //     //     display: false
+                        //     // },
+                        //     // ticks: {
+                        //     //     autoSkip: false,
+                        //     //     beginAtZero: true,
+                        //     //     stepSize: 1
+                        //     // }
 
-                        }
+                        // }
                     }
                 }
             });
