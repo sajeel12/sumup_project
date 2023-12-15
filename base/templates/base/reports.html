@@ -1,26 +1,33 @@
-{% extends "main.html" %} {% block content %}
+{% extends "main.html" %} 
+{% block content %}
 {% load static %}
 <div class="main-top">
     <!-- <h5> {{username}} </h5> -->
-
 </div>
 
 <div class="main-skills">
-
     <div class="card">
-        <a href="{% url 'download_excel' %}"> <Button>Download Excel</Button> </a>
-        <Button>Download CSV</Button>
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date">
+        
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date">
+        
+        <button onclick="downloadExcel()">Download Excel</button>
+        <button>Download CSV</button>
     </div>
 </div>
 
-
-
-
-
-
 <script>
     function downloadExcel() {
-        fetch('{% url "download_excel" %}')
+        // Get selected dates
+        const startDate = document.getElementById('start_date').value;
+        const endDate = document.getElementById('end_date').value;
+
+        // Construct URL with query parameters for the selected date range
+        const url = `{% url "download_excel" %}?start_date=${startDate}&end_date=${endDate}`;
+
+        fetch(url)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -29,14 +36,13 @@
             })
             .then(blob => {
                 // Create a link element and click it to trigger the download
-                const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = url;
+                a.href = window.URL.createObjectURL(blob);
                 a.download = 'mydata.xlsx';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
+                window.URL.revokeObjectURL(a.href);
             })
             .catch(error => {
                 console.error('Error during fetch operation:', error);
@@ -44,6 +50,5 @@
             });
     }
 </script>
-
 
 {% endblock %}
