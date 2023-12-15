@@ -183,8 +183,8 @@ def sumup_callback(request):
         "client_secret": settings.SUMUP_CLIENT_SECRET,
         "code": code,
         "grant_type": "authorization_code",
-        "redirect_uri": settings.SUMUP_REDIRECT_URI,
-        "expires_in": 31536000
+        "redirect_uri": settings.SUMUP_REDIRECT_URI
+        # "expires_in": 31536000
     }
 
     try:

@@ -13,6 +13,26 @@
 <div class="main-skills">
     <div class="card">
 
+        <h3>Total Amount</h3>
+        <p id="total_amount">--</p>
+
+    </div>
+    <div class="card">
+        <!-- <i class="fas fa-laptop-code"></i> -->
+        <h3>Amount Last Month</h3>
+        <p id="total_amount_lastmonth">--</p>
+
+    </div>
+    <div class="card">
+        <h3>Amount Today</h3>
+        <p id="total_amount_today">--</p> 
+    </div>
+
+</div>
+
+<div class="main-skills">
+    <div class="card">
+
         <h3>Total Donations</h3>
         <p id="total_transactions">--</p>
 
@@ -32,7 +52,7 @@
 <div class="main-skills">
     <div class="graph-card">
 
-        <h3>Transactions </h3>
+        <h3>Transactions </h3><button onclick="get_total_transactions()">get total transaction</button>
         <select class="graph-select" id="productSummarySelect" onchange="handleProductSummuryChange()">
 
         </select>
@@ -57,9 +77,9 @@
     <div class="card">
 
         <h3>Sumup not connected </h3>
-        <a  href="{% url 'sumup_login' %}"  >
-           <b> Connect Sumup </b>
-           </a>
+        <a href="{% url 'sumup_login' %}">
+            <b> Connect Sumup </b>
+        </a>
 
     </div>
 
@@ -76,9 +96,13 @@
         var total_transactions = [];
         var last_week_transactions = [];
         var last_month_transactions = [];
+        var total_amount = 0;
+        var total_amount_lastmonth = 0;
+        var total_amount_today = 0;
+
 
         function get_total_transactions() {
-
+            console.log('in total transactions')
             transaction_loading.style.display = 'block';
 
             fetch("/sumup/transactions/")  // Replace with the actual URL of your Django view
@@ -114,6 +138,30 @@
                     console.log(lastMonthTransactions, 'lastMonthTransactions')
                     const lastMonthCount = Object.keys(lastMonthTransactions).length;
 
+
+                    // today total amount
+                    const todayStart = new Date();
+                    todayStart.setHours(0, 0, 0, 0); // Set to the beginning of the day
+                    const todayTransactions = data.data.items.filter(function (transaction) {
+                        var transactionDate = new Date(transaction.timestamp);
+                        return transactionDate >= todayStart;
+                    });
+
+
+                    // last 30 day total amount
+                    lastMonthTransactions.forEach(transaction => {
+                        total_amount_lastmonth += transaction.amount;
+                    });
+
+                    // today total amount
+                    todayTransactions.forEach(transaction => {
+                        total_amount_today += transaction.amount;
+                    });
+                    // all time total amount
+                    transactions.forEach(transaction => {
+                        total_amount += transaction.amount;
+                    });
+
                     // setting variables
                     total_transactions = transactions;
                     last_week_transactions = lastWeekTransactions;
@@ -124,6 +172,10 @@
                     document.getElementById("total_transactions").innerHTML = totalCount;
                     document.getElementById("transaction_last_week").innerHTML = lastWeekCount;
                     document.getElementById("transaction_last_month").innerHTML = lastMonthCount;
+
+                    document.getElementById("total_amount").innerHTML = total_amount +' $'  ;
+                    document.getElementById("total_amount_lastmonth").innerHTML = total_amount_lastmonth +' $'  ;
+                    document.getElementById("total_amount_today").innerHTML = total_amount_today +' $' ;
 
                     createLineChart(data?.data?.items);
                     createBarChart(data?.data?.items);
@@ -141,7 +193,7 @@
         get_total_transactions();
 
         function product_summury() {
-            const productSummaries = transactions.map(transaction => transaction.product_summary.toLowerCase());
+            const productSummaries = transactions.map(transaction => transaction.product_summary); // lower case problem
 
             const uniqueProductSummaries = [...new Set(productSummaries)];
 
@@ -174,7 +226,7 @@
 
             // Filter transactions based on the selected product summary
             const filteredTransactions = transactions.filter(transaction => {
-                return selectedProductSummary === '' || transaction.product_summary.toLowerCase() === selectedProductSummary;
+                return selectedProductSummary === '' || transaction.product_summary === selectedProductSummary;  //lower case problem
             });
 
             // Call the modified createLineChart function with the filtered transactions
@@ -254,7 +306,7 @@
                 options: {
                     legend: { display: false },
                     scales: {
-                        yAxes: [{ ticks: { min: 0, max: 16 } }],
+                        // yAxes: [{ ticks: { min: 0, max: 16 } }],          //  to check
                     }
                 }
             });
@@ -279,7 +331,7 @@
             const colors = ['#e842ff', '#42a5f5', '#66bb6a', '#ffa726', '#ff7043', '#8d6e63'];
 
             transactions.forEach((transaction, index) => {
-                const productSummary = transaction.product_summary.toLowerCase();
+                const productSummary = transaction.product_summary;
 
                 if (productCounts[productSummary]) {
                     productCounts[productSummary] += 1;
