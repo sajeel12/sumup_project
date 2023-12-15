@@ -20,14 +20,7 @@
 
 <script>
     function downloadExcel() {
-        // Get selected dates
-        const startDate = document.getElementById('start_date').value;
-        const endDate = document.getElementById('end_date').value;
-
-        // Construct URL with query parameters for the selected date range
-        const url = `{% url "download_excel" %}?start_date=${startDate}&end_date=${endDate}`;
-
-        fetch(url)
+        fetch('{% url "download_excel" %}')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -36,13 +29,14 @@
             })
             .then(blob => {
                 // Create a link element and click it to trigger the download
+                const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = window.URL.createObjectURL(blob);
+                a.href = url;
                 a.download = 'mydata.xlsx';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                window.URL.revokeObjectURL(a.href);
+                window.URL.revokeObjectURL(url);
             })
             .catch(error => {
                 console.error('Error during fetch operation:', error);
@@ -50,5 +44,4 @@
             });
     }
 </script>
-
 {% endblock %}

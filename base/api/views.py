@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 from .serializers import UserLoginSerializer
 from django.contrib.auth import authenticate
+from base.models import User
 
 @api_view(['POST'])
 def user_login(request):
@@ -24,3 +25,12 @@ def getRoutes(request):
         'GET /api/rooms/:id'
     ]
     return Response(routes)  
+
+@api_view(['GET'])
+def check_email_exists(request, email):
+    try:
+        user_profile = User.objects.get(email=email)
+        serializer = User(user_profile)
+        return Response({'exists': True})
+    except User.DoesNotExist:
+        return Response({'exists': False})

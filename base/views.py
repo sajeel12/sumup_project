@@ -306,6 +306,7 @@ def download_excel(request):
     print(data['data']['items'][0])
     data =  data['data']['items']
  
+ 
 
     # Create a new workbook and add a worksheet
     wb = Workbook()

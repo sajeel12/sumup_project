@@ -281,7 +281,8 @@
             // 99999999999999999999999999
             const timestamps = new Set();
             transactions.forEach(transaction => {
-                const timestamp = new Date(transaction.timestamp).toLocaleDateString();
+                // const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                const timestamp = new Date(transaction.timestamp).toLocaleDateString('en-GB');
                 timestamps.add(timestamp);
             });
             const uniqueTimestampsArray = Array.from(timestamps);
