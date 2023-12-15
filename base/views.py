@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.contrib.auth.hashers import check_password
 import json
+from openpyxl import Workbook
 # from .forms import SignUpForm
 
 import pycountry
@@ -296,3 +297,38 @@ def get_total_transactions(request):
 
 
 # ===================== Api Fucnitons E =======================================================================
+
+@login_required(login_url="loginto")
+def download_excel(request):
+    # Sample data (replace this with your actual data)
+    data = get_total_transactions(request)
+    data = json.loads(data.content)
+    print(data['data']['items'][0])
+    data =  data['data']['items']
+ 
+
+    # Create a new workbook and add a worksheet
+    wb = Workbook()
+    ws = wb.active
+
+    # Write header
+    header = list(data[0].keys())
+    print(header, '<-- header')
+    ws.append(header)
+    # for row in header:
+        # ws.append(row)
+    # Write data
+    for row_data in data:
+        try:
+            ws.append([row_data[key] for key in header])
+        except:
+            pass
+
+    # Create a response
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=transaction_data.xlsx'
+
+    # Save the workbook to the response
+    wb.save(response)
+
+    return response

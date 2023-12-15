@@ -1,4 +1,5 @@
 pycountry
 django
 requests
+openpyxl
 djangorestframework

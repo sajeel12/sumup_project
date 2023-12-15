@@ -23,4 +23,7 @@ urlpatterns = [
     path('get-users/', views.get_users, name='get_users'),
     path('approve-user/', views.approve_user, name='approve_users'),
 
+    path('download-excel/', views.download_excel, name='download_excel'),
+
+
 ]
