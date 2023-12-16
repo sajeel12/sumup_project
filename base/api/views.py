@@ -26,11 +26,10 @@ def getRoutes(request):
     ]
     return Response(routes)  
 
-@api_view(['GET'])
-def check_email_exists(request, email):
-    try:
-        user_profile = User.objects.get(email=email)
-        serializer = User(user_profile)
-        return Response({'exists': True})
-    except User.DoesNotExist:
-        return Response({'exists': False})
+@api_view(['POST'])
+def check_email_exists(request):
+    serializer = UserLoginSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    user = serializer.validated_data['user']
+    token, created = Token.objects.get_or_create(user=user)
+    return Response({'token': token.key}, status=status.HTTP_200_OK)
