@@ -16,15 +16,15 @@ class UserLoginSerializer(serializers.Serializer):
         data['user'] = user 
         return data
     
-class UserProfileSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(write_only=True)
+# class UserProfileSerializer(serializers.ModelSerializer):
+#     email = serializers.EmailField()
+#     password = serializers.CharField(write_only=True)
 
-    def validate(self, data):
-        user = User.objects.get(email=data['email'])
+#     def validate(self, data):
+#         user = authenticate(email=data['email'], password=data['password'])
 
-        if not user:
-            raise serializers.ValidationError('Invalid email or password')
+#         if not user:
+#             raise serializers.ValidationError('Invalid email or password')
 
-        data['user'] = user 
-        return data
+#         data['user'] = user 
+#         return data
