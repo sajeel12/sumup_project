@@ -10,7 +10,8 @@
     <title>Masoom Network</title>
 </head>
 
-<body>
+<body  >
+    <!-- <button class="dark-mode-btn" onclick="toggleDarkMode()" >Dark MOde </button> -->
     <div class="container">
 
         {% if page != 'login' and page != 'signup' %}
@@ -26,5 +27,12 @@
 
     </div>
 </body>
+
+<script>
+    function toggleDarkMode() {
+       var element = document.body;
+       element.classList.toggle("dark-mode");
+    }
+    </script>
 
 </html>

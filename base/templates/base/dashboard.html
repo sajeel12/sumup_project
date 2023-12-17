@@ -13,19 +13,19 @@
 <div class="main-skills">
     <div class="card">
 
-        <h3>Total Amount</h3>
+        <h3 class="card-title" >Total Amount</h3>
         <p id="total_amount">--</p>
 
     </div>
     <div class="card">
         <!-- <i class="fas fa-laptop-code"></i> -->
-        <h3>Amount Last Month</h3>
+        <h3 class="card-title" >Amount Last Month</h3>
         <p id="total_amount_lastmonth">--</p>
 
     </div>
     <div class="card">
-        <h3>Amount Today</h3>
-        <p id="total_amount_today">--</p> 
+        <h3 class="card-title" >Amount Today</h3>
+        <p id="total_amount_today">--</p>
     </div>
 
 </div>
@@ -33,35 +33,53 @@
 <div class="main-skills">
     <div class="card">
 
-        <h3>Total Donations</h3>
+        <h3 class="card-title" >Total Donations</h3>
         <p id="total_transactions">--</p>
 
     </div>
     <div class="card">
-        <!-- <i class="fas fa-laptop-code"></i> -->
-        <h3>Donation Last Week</h3>
-        <p id="transaction_last_week">--</p>
-
+        <h3 class="card-title" >Donations last 30 days</h3>
+        <p id="transaction_last_month">--</p>
     </div>
     <div class="card">
-        <h3>Donations last 30 days</h3>
-        <p id="transaction_last_month">--</p>
+        <!-- <i class="fas fa-laptop-code"></i> -->
+        <h3 class="card-title" >Donation Last Week</h3>
+        <p id="transaction_last_week">--</p>
+
     </div>
 
 </div>
 <div class="main-skills">
     <div class="graph-card">
+        <select class="graph-select-left" id="SelectDateRageLineChart" onchange="handleProductSummuryChange()">
+            <option value="all">All</option>
+            <option value="lastWeek">Last Week</option>
+            <option value="last30Days">Last 30 Days</option>
+        </select>
 
-        <h3>Transactions </h3><button onclick="get_total_transactions()">get total transaction</button>
+        <h3 class="card-title" >Transactions </h3><button onclick="get_total_transactions()">get total transaction</button>
         <select class="graph-select" id="productSummarySelect" onchange="handleProductSummuryChange()">
 
         </select>
         <canvas id="transactionChart" width="100" height="50"></canvas>
     </div>
 
+    <div class="card" ;" style="justify-content: space-evenly;" >
+        <h3 class="card-title" >Total  Transactions in Selected Campaign</h3>
+        <p id="transaction_in_selected_range">--</p>
+
+        <h3 class="card-title" >Total Donations in Selected Campaign</h3>
+        <p id="donations_in_selected_range">--</p>
+    </div>
+
+</div>
+
+<div class="main-skills">
+
+
     <div class="graph-card"> <!-- Bar Chart -->
 
-        <h3>Transactions </h3>
+        <h3 class="card-title" >Transactions </h3>
         <select class="graph-select" id="productSummarySelectBar" onchange="handleProductSummuryBarChange()">
             <option value="all">All</option>
             <option value="lastWeek">Last Week</option>
@@ -71,12 +89,28 @@
     </div>
 
 </div>
+<!--  failed donations -->
+<div class="main-skills" style="margin-bottom: 50px;" >
+    <div class="card">
+
+        <h3 class="card-title" >Gift Part</h3>
+        <p   > Coming Soon !</p>
+
+    </div>
+    <div class="card">
+
+        <h3 class="card-title" >Failed Donations this weak</h3>
+        <p  class="failed-text" id="failed_donations">--</p>
+
+    </div>
+
+</div>
 
 {% else %}
 <div class="main-skills">
     <div class="card">
 
-        <h3>Sumup not connected </h3>
+        <h3 class="card-title" >Sumup not connected </h3>
         <a href="{% url 'sumup_login' %}">
             <b> Connect Sumup </b>
         </a>
@@ -117,6 +151,10 @@
                     transactions = data.data.items;
                     // Update the HTML on your page with the received data
                     const totalCount = Object.keys(data?.data?.items).length;
+
+                    // transactions = transactions.forEach(transaction => {
+                    //     transaction.status === "SUCCESSFUL";
+                    // });
 
                     //  last week  data
                     var lastWeekStart = new Date();
@@ -162,6 +200,11 @@
                         total_amount += transaction.amount;
                     });
 
+                    // last week failed transactions
+                    var failed_donations_last_week = lastWeekTransactions.filter(function (transaction) {
+                        return transaction.status === 'FAILED';
+                    });
+
                     // setting variables
                     total_transactions = transactions;
                     last_week_transactions = lastWeekTransactions;
@@ -173,9 +216,11 @@
                     document.getElementById("transaction_last_week").innerHTML = lastWeekCount;
                     document.getElementById("transaction_last_month").innerHTML = lastMonthCount;
 
-                    document.getElementById("total_amount").innerHTML = total_amount +' $'  ;
-                    document.getElementById("total_amount_lastmonth").innerHTML = total_amount_lastmonth +' $'  ;
-                    document.getElementById("total_amount_today").innerHTML = total_amount_today +' $' ;
+                    document.getElementById("total_amount").innerHTML = total_amount + ' $';
+                    document.getElementById("total_amount_lastmonth").innerHTML = total_amount_lastmonth + ' $';
+                    document.getElementById("total_amount_today").innerHTML = total_amount_today + ' $';
+
+                    document.getElementById("failed_donations").innerHTML = failed_donations_last_week.length;
 
                     createLineChart(data?.data?.items);
                     createBarChart(data?.data?.items);
@@ -222,14 +267,33 @@
 
         function handleProductSummuryChange() {
             // Get the selected product summary
+            var total_donation_in_range = 0;
             const selectedProductSummary = productSummarySelect.value;
+
+            const selectedDateRange = SelectDateRageLineChart.value;
+
+            if (selectedDateRange === 'lastWeek') {
+                transactions = last_week_transactions;
+            } else if (selectedDateRange === 'last30Days') {
+                transactions = last_month_transactions;
+            } else {
+                transactions = total_transactions;
+            }
 
             // Filter transactions based on the selected product summary
             const filteredTransactions = transactions.filter(transaction => {
                 return selectedProductSummary === '' || transaction.product_summary === selectedProductSummary;  //lower case problem
             });
 
+            filteredTransactions.forEach(transaction => {
+                        total_donation_in_range += transaction.amount;
+                    });
+
+            document.getElementById("transaction_in_selected_range").innerHTML = filteredTransactions.length;
+            document.getElementById("donations_in_selected_range").innerHTML = total_donation_in_range + ' $';
+
             // Call the modified createLineChart function with the filtered transactions
+
             createLineChart(filteredTransactions);
         }
 

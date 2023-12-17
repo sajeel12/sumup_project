@@ -28,3 +28,18 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
+class Donor(models.Model):
+    title = models.CharField(max_length=255)
+    firstName = models.CharField(max_length=255)
+    lastName = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)
+    postcode = models.CharField(max_length=10)
+    phoneNumber = models.CharField(max_length=15)
+    emailAddress = models.EmailField()
+    transactionCode = models.CharField(max_length=255, null=True, blank=True)
+    amountInPounds = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    merchantCode = models.CharField(max_length=255, null=True, blank=True)
+    productInformation = models.TextField(null=True, blank=True)
+    subscribe = models.BooleanField(default=False)

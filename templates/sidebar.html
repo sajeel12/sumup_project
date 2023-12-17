@@ -27,13 +27,13 @@
         <span class="nav-item">Campaigns</span>
       </a></li>
 
-      {% if request.user.is_superuser or request.user.is_admin %}
-        
-      <li><a href="{% url 'user_management' %}">
+    {% if request.user.is_superuser or request.user.is_admin %}
+
+    <li><a href="{% url 'user_management' %}">
         <i class="fas fa-tasks"></i>
         <span class="nav-item">User Accounts</span>
       </a></li>
-      {% endif %}
+    {% endif %}
 
     <li><a href="">
         <i class="fas fa-cog"></i>
@@ -51,7 +51,10 @@
   </li>
 </nav>
 
+
 <script>
+
+
 
   var istoggle = true;
   function toggleSidebar() {

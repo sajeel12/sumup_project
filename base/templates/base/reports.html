@@ -1,6 +1,9 @@
 {% extends "main.html" %} 
 {% block content %}
 {% load static %}
+
+<img id="transaction_loading" src=" {% static 'images/loading.gif' %} " height="25px" style="display: none;" alt="">
+
 <div class="main-top">
     <!-- <h5> {{username}} </h5> -->
 </div>
@@ -16,6 +19,37 @@
         <button onclick="downloadExcel()">Download Excel</button>
         <button>Download CSV</button>
     </div>
+</div>
+
+<div class="main-skills">
+    <div class="card" style="align-items: unset;">
+
+        <h4> Transactions Report</h4>
+        <div class="card-body">
+            <table class="table" id="userTable">
+                <thead>
+                    <tr class="table-row">
+                        <th scope="col">S.No</th>
+                        <th scope="col">Campaign</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Currency</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Transaction Code</th>
+                        <th scope="col">Entry Mode</th>
+                        <th scope="col">Card Type</th>
+                        <th scope="col">Time Stamp</th>
+                        <th scope="col">Merchant User</th>
+                        <!-- <th>Actions</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
 </div>
 
 <script>
@@ -43,5 +77,70 @@
                 // Handle the error as needed
             });
     }
+
+
+// /////////////////////////// 2nd table ///////////////////////////////
+
+function getTransactions() {
+            fetch('/sumup/transactions/')  // Replace with the actual URL for your view
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Handle the JSON response data
+                    // transactions = data.data.items
+
+                    var lastWeekStart = new Date();
+                    lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+                    var lastWeekTransactions = data.data.items.filter(function (transaction) {
+                        var transactionDate = new Date(transaction.timestamp);
+                        return transactionDate > lastWeekStart;
+                    });
+                    console.log(lastWeekTransactions);
+                    updateTable(lastWeekTransactions);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function updateTable(transactions) {
+            const tableBody = document.querySelector('#userTable tbody');
+            const table = document.querySelector('#userTable');
+
+            tableBody.innerHTML = '';  // Clear existing table rows
+            if (transactions.length !== 0) {
+
+                console.log(transactions, "transactions");
+                transactions.forEach((transaction, index) => {
+                    const row = tableBody.insertRow(index);
+                    row.insertCell(0).textContent = index + 1;
+                    row.insertCell(1).textContent = transaction.product_summary;
+                    row.insertCell(2).textContent = transaction.amount;
+                    row.insertCell(3).textContent = transaction.currency;
+                    row.insertCell(4).textContent = transaction.status;
+                    row.insertCell(5).textContent = transaction.transaction_code;
+                    row.insertCell(6).textContent = transaction.entry_mode;
+                    row.insertCell(7).textContent = transaction.card_type;
+                    row.insertCell(8).textContent = transaction.timestamp;
+                    row.insertCell(9).textContent = transaction.user;
+                    // row.insertCell(10).innerHTML = `<td class="table-actions" >
+                    //         <button onclick="approvalAction(true )" style="background-color: rgb(0, 255, 68);color: black;" > Approve</button>
+                    //         <button onclick="approvalAction(false)" > Reject</button>
+                    //     </td>
+                    //     `;
+
+                    // Add more cells as needed
+                });
+            }
+            else {
+                table.innerHTML = '<h5>No Transactions</h5>';
+            }
+        }
+
+        getTransactions();
+
+
 </script>
 {% endblock %}
