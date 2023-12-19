@@ -192,6 +192,7 @@ def sumup_callback(request):
         response.raise_for_status()  # Raise an error for bad responses
         token_data = response.json()
         access_token = token_data.get("access_token")
+        refresh_token = token_data.get("refresh_token")
     except requests.RequestException as e:
         return JsonResponse(
             {"error": f"Error exchanging code for token: {e}"}, status=500
@@ -199,10 +200,12 @@ def sumup_callback(request):
 
 
     print(access_token, "<-- access token")
+    print(token_data.get("refresh_token"), "<-- access token")
 
-    # Save the access token in the database
+    # Save the access token in the databases
     user  = User.objects.get(id=request.user.id)
     user.sumup_access_token = access_token
+    user.sumup_refresh_token = refresh_token
     user.save()
 
     # Use the access token to get user information
@@ -232,6 +235,36 @@ def sumup_callback(request):
         return redirect("dashboard")
     else:
         return JsonResponse({"error": "User authentication failed"}, status=400)
+
+@login_required(login_url="loginto")
+def refresh_access_token(refresh_token,user):
+    token_url = "https://api.sumup.com/token"
+
+    data = {
+        'client_id': settings.SUMUP_CLIENT_ID,
+        'client_secret':  settings.SUMUP_CLIENT_SECRET,
+        'grant_type': 'refresh_token',
+        'refresh_token': refresh_token,
+    }
+
+    try:
+        response = requests.post(token_url, data=data)
+        response.raise_for_status()  # Raise an error for bad responses
+        token_data = response.json()
+        new_access_token = token_data.get("access_token")
+        new_refresh_token = token_data.get("refresh_token")
+
+        # user  = User.objects.get(id=request.user.id)
+        user.sumup_access_token = new_access_token
+        user.sumup_refresh_token = new_refresh_token
+        user.save()
+    except requests.RequestException as e:
+        return JsonResponse(
+            {"error": f"Error exchanging code for token: {e}"}, status=500
+        )
+
+    
+    
 
 
 def reports(request):
@@ -288,10 +321,24 @@ def get_total_transactions(request):
             transactions_info_response = requests.get(
                 transactionss_info_url, headers=headers, params=params
             )
-            transactions = transactions_info_response.json()
-            return JsonResponse({"data": transactions})
+            response = transactions_info_response.json()
+            # json_response = json.loads(response)
+            # print(json_response, "<-- transactions  response")
+            print(response['error_message'], 'error message')
+            if response['error_message']:
+                # print('in if')
+                refresh_access_token(request.user.sumup_refresh_token,request.user)
+                transactions_info_response = requests.get(
+                    transactionss_info_url, headers=headers, params=params
+                )
+                response = transactions_info_response.json()
+                
+            
+
+            print(response, "<-- transactions  response")
+            return JsonResponse({"data": response})
         except:
-            pass
+            print("error in get total transactions")
 
 
 

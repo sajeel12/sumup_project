@@ -19,6 +19,7 @@ class User(AbstractUser):
 
     
     sumup_access_token = models.CharField(max_length=255, null=True, blank=True)
+    sumup_refresh_token = models.CharField(max_length=255, null=True, blank=True)
     
     is_admin = models.BooleanField(default=False)
 
