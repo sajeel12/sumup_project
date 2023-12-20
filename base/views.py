@@ -236,8 +236,10 @@ def sumup_callback(request):
     else:
         return JsonResponse({"error": "User authentication failed"}, status=400)
 
-@login_required(login_url="loginto")
+# @login_required(login_url="loginto")
 def refresh_access_token(refresh_token,user):
+    print('                    in refresh function')
+
     token_url = "https://api.sumup.com/token"
 
     data = {
@@ -248,7 +250,11 @@ def refresh_access_token(refresh_token,user):
     }
 
     try:
+        print('                    in refresh try')
+
         response = requests.post(token_url, data=data)
+        print('                    in after response function')
+
         response.raise_for_status()  # Raise an error for bad responses
         token_data = response.json()
         new_access_token = token_data.get("access_token")
@@ -258,6 +264,7 @@ def refresh_access_token(refresh_token,user):
         user.sumup_access_token = new_access_token
         user.sumup_refresh_token = new_refresh_token
         user.save()
+        print('                    user saved refresh success')
     except requests.RequestException as e:
         return JsonResponse(
             {"error": f"Error exchanging code for token: {e}"}, status=500
@@ -324,21 +331,23 @@ def get_total_transactions(request):
             response = transactions_info_response.json()
             # json_response = json.loads(response)
             # print(json_response, "<-- transactions  response")
-            print(response['error_message'], 'error message')
-            if response['error_message']:
-                # print('in if')
-                refresh_access_token(request.user.sumup_refresh_token,request.user)
-                transactions_info_response = requests.get(
-                    transactionss_info_url, headers=headers, params=params
-                )
-                response = transactions_info_response.json()
-                
+            # print(response['error_message'], 'error message')
+            try:
+                if response['error_message']:
+                    new_access_token = refresh_access_token(request.user.sumup_refresh_token,request.user)
+                    headers = {"Authorization": f"Bearer {new_access_token}"}
+                    transactions_info_response = requests.get(
+                        transactionss_info_url, headers=headers, params=params
+                    )
+                    response = transactions_info_response.json()
             
-
+            except:
+                pass
             print(response, "<-- transactions  response")
             return JsonResponse({"data": response})
         except:
             print("error in get total transactions")
+            return JsonResponse({"error": "error in get total transactions"})
 
 
 
