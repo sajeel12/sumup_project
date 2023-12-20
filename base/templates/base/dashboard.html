@@ -94,13 +94,13 @@
 <div class="main-skills" style="margin-bottom: 50px;">
     <div class="card">
 
-        <h3 class="card-title">Gift Part</h3>
+        <h3 class="card-title">Gift Aid</h3>
         <p> Coming Soon !</p>
 
     </div>
     <div class="card">
 
-        <h3 class="card-title">Failed Donations this weak</h3>
+        <h3 class="card-title">Failed Donations All Time</h3>
         <p class="failed-text" id="failed_donations">--</p>
 
     </div>
@@ -150,8 +150,12 @@
                 .then(data => {
                     console.log("Data received:", data);
                     transactions = data.data.items;
+
+                    transactions = transactions.filter(function (transaction) {
+                        return transaction.status === 'SUCCESSFUL';
+                    });
                     // Update the HTML on your page with the received data
-                    const totalCount = Object.keys(data?.data?.items).length;
+                    const totalCount = Object.keys(transactions).length;
 
                     // transactions = transactions.forEach(transaction => {
                     //     transaction.status === "SUCCESSFUL";
@@ -160,7 +164,7 @@
                     //  last week  data
                     var lastWeekStart = new Date();
                     lastWeekStart.setDate(lastWeekStart.getDate() - 7);
-                    var lastWeekTransactions = data.data.items.filter(function (transaction) {
+                    var lastWeekTransactions = transactions.filter(function (transaction) {
                         var transactionDate = new Date(transaction.timestamp);
                         return transactionDate > lastWeekStart;
                     });
@@ -170,7 +174,7 @@
                     //  last 30 data
                     var lastMonthStart = new Date();
                     lastMonthStart.setDate(lastMonthStart.getDate() - 30);
-                    var lastMonthTransactions = data.data.items.filter(function (transaction) {
+                    var lastMonthTransactions = transactions.filter(function (transaction) {
                         var transactionDate = new Date(transaction.timestamp);
                         return transactionDate > lastMonthStart;
                     });
@@ -181,7 +185,7 @@
                     // today total amount
                     const todayStart = new Date();
                     todayStart.setHours(0, 0, 0, 0); // Set to the beginning of the day
-                    const todayTransactions = data.data.items.filter(function (transaction) {
+                    const todayTransactions = transactions.filter(function (transaction) {
                         var transactionDate = new Date(transaction.timestamp);
                         return transactionDate >= todayStart;
                     });
@@ -202,7 +206,7 @@
                     });
 
                     // last week failed transactions
-                    var failed_donations_last_week = lastWeekTransactions.filter(function (transaction) {
+                    var failed_donations_last_week = data?.data?.items.filter(function (transaction) {
                         return transaction.status === 'FAILED';
                     });
 
