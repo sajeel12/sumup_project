@@ -128,6 +128,7 @@
 
         let transaction_loading = document.getElementById('transaction_loading');
         var transactions = [];
+        var success_transactions = [];
         var total_transactions = [];
         var last_week_transactions = [];
         var last_month_transactions = [];
@@ -151,9 +152,10 @@
                     console.log("Data received:", data);
                     transactions = data.data.items;
 
-                    transactions = transactions.filter(function (transaction) {
+                    success_transactions = transactions.filter(function (transaction) {
                         return transaction.status === 'SUCCESSFUL';
                     });
+                    transactions = success_transactions
                     // Update the HTML on your page with the received data
                     const totalCount = Object.keys(transactions).length;
 
@@ -221,14 +223,14 @@
                     document.getElementById("transaction_last_week").innerHTML = lastWeekCount;
                     document.getElementById("transaction_last_month").innerHTML = lastMonthCount;
 
-                    document.getElementById("total_amount").innerHTML = total_amount + ' $';
-                    document.getElementById("total_amount_lastmonth").innerHTML = total_amount_lastmonth + ' $';
-                    document.getElementById("total_amount_today").innerHTML = total_amount_today + ' $';
+                    document.getElementById("total_amount").innerHTML =  '£ ' + total_amount ;
+                    document.getElementById("total_amount_lastmonth").innerHTML =   '£ ' + total_amount_lastmonth ;
+                    document.getElementById("total_amount_today").innerHTML = '£ ' + total_amount_today ;
 
                     document.getElementById("failed_donations").innerHTML = failed_donations_last_week.length;
 
-                    createLineChart(data?.data?.items);
-                    createBarChart(data?.data?.items);
+                    createLineChart(success_transactions);
+                    createBarChart(success_transactions);
 
 
                     product_summury();
@@ -295,7 +297,7 @@
             });
 
             document.getElementById("transaction_in_selected_range").innerHTML = filteredTransactions.length;
-            document.getElementById("donations_in_selected_range").innerHTML = total_donation_in_range + ' $';
+            document.getElementById("donations_in_selected_range").innerHTML = total_donation_in_range + ' £';
 
             // Call the modified createLineChart function with the filtered transactions
 
@@ -390,7 +392,7 @@
             const ctx = document.getElementById('transactionBarChart').getContext('2d');
 
             const productAmounts = {};
-            const colors = ['rgba(232, 66, 255, 0.6)', 'rgba(66, 165, 245, 0.6)', 'rgba(102, 187, 106, 0.6)', 'rgba(255, 167, 38, 0.6)', 'rgba(255, 112, 67, 0.6)', 'rgba(141, 110, 99, 0.6)'];
+            const colors = ['rgba(232, 66, 255, 2)', 'rgba(66, 165, 245, 2)', 'rgba(102, 187, 106, 2)', 'rgba(255, 167, 38, 2)', 'rgba(255, 112, 67, 2)', 'rgba(141, 110, 99, 2)'];
 
             transactions.forEach((transaction, index) => {
                 const productSummary = transaction.product_summary;
