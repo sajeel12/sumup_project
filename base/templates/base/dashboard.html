@@ -359,10 +359,10 @@
                     labels: xValues,
                     datasets: [{
                         label: 'Total Amount of Transactions',
-                        fill: false,
+                        fill: true,
                         lineTension: 0.3,
-                        backgroundColor: "rgba(0,0,255,1.0)",
-                        borderColor: "rgba(0,0,255,0.1)",
+                        backgroundColor: "rgba(255, 99, 132, 0.2)",
+                        borderColor: "rgba(255,99,132,0.3)",
                         data: yValues
                     }]
                 },
@@ -386,7 +386,7 @@
             const ctx = document.getElementById('transactionBarChart').getContext('2d');
 
             const productAmounts = {};
-            const colors = ['#e842ff', '#42a5f5', '#66bb6a', '#ffa726', '#ff7043', '#8d6e63'];
+            const colors = ['rgba(232, 66, 255, 0.6)', 'rgba(66, 165, 245, 0.6)', 'rgba(102, 187, 106, 0.6)', 'rgba(255, 167, 38, 0.6)', 'rgba(255, 112, 67, 0.6)', 'rgba(141, 110, 99, 0.6)'];
 
             transactions.forEach((transaction, index) => {
                 const productSummary = transaction.product_summary;
