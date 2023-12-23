@@ -21,6 +21,7 @@ urlpatterns = [
 
     # apis
     path('get-users/', views.get_users, name='get_users'),
+    path('donors/', views.get_donors, name='donors'),
     path('approve-user/', views.approve_user, name='approve_users'),
 
     # path('download-excel/<str:start_date>/<str:end_date>/', views.download_excel, name='download_excel'),

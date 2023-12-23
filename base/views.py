@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 # from django.contrib.auth.models import User
-from .models import User
+from .models import Donor, User
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from django.http import HttpResponse, JsonResponse
@@ -206,7 +206,6 @@ def sumup_callback(request):
     user  = User.objects.get(id=request.user.id)
     user.sumup_access_token = access_token
     user.sumup_refresh_token = refresh_token
-    user.save()
 
     # Use the access token to get user information
     user_info_url = "https://api.sumup.com/v0.1/me"
@@ -221,17 +220,20 @@ def sumup_callback(request):
             {"error": f"Error fetching user information: {e}"}, status=500
         )
 
-    print(user_info, "<-- user info")
+    print(user_info['merchant_profile']['merchant_code'], "<-- merchnt  code")
+
+    user.merchant_code = user_info['merchant_profile']['merchant_code']
+    user.save()
 
 
-    email = (
-        user_info.get("merchant_profile", {}).get("doing_business_as", {}).get("email")
-    )
+    merchant_code = user_info['merchant_profile']['merchant_code']
 
-    print(email)
+
+
+    print(merchant_code)
 
     # Authenticate or create the user in your Django application
-    if email:
+    if merchant_code:
         return redirect("dashboard")
     else:
         return JsonResponse({"error": "User authentication failed"}, status=400)
@@ -285,6 +287,14 @@ def user_management(request):
         return render(request, "base/user_management.html", context)
     else:
         return redirect("dashboard")
+
+
+@login_required(login_url="loginto")
+def get_donors(request):
+    donors = Donor.objects.all()
+    # donors = list(donors.values())
+    context = {"donors": donors}
+    return render(request, "base/donors.html", context)
 
 
 # ===================== Api Fucnitons  S ======================================================================

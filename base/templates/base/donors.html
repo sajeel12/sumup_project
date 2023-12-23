@@ -1,0 +1,71 @@
+{% extends "main.html" %}
+{% block content %}
+{% load static %}
+
+<img id="transaction_loading" src=" {% static 'images/loading.gif' %} " height="25px" style="display: none;" alt="">
+
+<div class="main-top">
+    <!-- <h5> {{username}} </h5> -->
+</div>
+
+<div class="main-skills">
+    <div class="card">
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date">
+
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date">
+
+        <button onclick="downloadExcel()">Download Excel</button>
+        <button>Download CSV</button>
+    </div>
+</div>
+
+<div class="main-skills">
+    <div class="card" style="align-items: unset;">
+
+        <h4> Transactions Report</h4>
+        <div class="card-body">
+            <table class="table" id="userTable">
+                <thead>
+                    <tr class="table-row">
+                        <th scope="col">First Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone</th>
+                        <!-- <th scope="col">Currency</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Transaction Code</th>
+                        <th scope="col">Entry Mode</th>
+                        <th scope="col">Card Type</th>
+                        <th scope="col">Time Stamp</th>
+                        <th scope="col">Merchant User</th> -->
+                        <!-- <th>Actions</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for donor in donors %}
+                    <tr>
+                        <td> {{donor.firstName}} </td>
+                        <td> {{donor.emailAddress}} </td>
+                        <td> {{donor.phoneNumber}} </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+
+
+    // /////////////////////////// 2nd table ///////////////////////////////
+
+
+
+</script>
+{% endblock %}
