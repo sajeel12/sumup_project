@@ -27,4 +27,4 @@ class DonorSerializer(serializers.ModelSerializer):
 class MerchantSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '[merchant_code, sumup_access_token]'
+        fields = '__all__'
