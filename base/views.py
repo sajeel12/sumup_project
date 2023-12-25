@@ -145,7 +145,7 @@ def logoutUser(request):
     return redirect("loginto")
 
 
-# views.py
+# views
 @login_required(login_url="loginto")
 def sumup_login(request):
     print("in sumup login")
@@ -173,7 +173,7 @@ def sumup_callback(request):
 
     print("in sumup callback")
 
-    # Handle the callback from SumUp after user authorization
+    # callback from SumUp after user authorization
     code = request.GET.get("code")
 
     # Exchange the authorization code for an access token
@@ -184,12 +184,12 @@ def sumup_callback(request):
         "code": code,
         "grant_type": "authorization_code",
         "redirect_uri": settings.SUMUP_REDIRECT_URI,
-        "expires_in": 31
+        "expires_in": 3600
     }
 
     try:
         response = requests.post(token_url, data=data)
-        response.raise_for_status()  # Raise an error for bad responses
+        response.raise_for_status()  # error for bad responses
         token_data = response.json()
         access_token = token_data.get("access_token")
         refresh_token = token_data.get("refresh_token")
@@ -202,12 +202,12 @@ def sumup_callback(request):
     print(access_token, "<-- access token")
     print(token_data.get("refresh_token"), "<-- access token")
 
-    # Save the access token in the databases
+    # Save the access token in the database
     user  = User.objects.get(id=request.user.id)
     user.sumup_access_token = access_token
     user.sumup_refresh_token = refresh_token
 
-    # Use the access token to get user information
+    # =get user information
     user_info_url = "https://api.sumup.com/v0.1/me"
     headers = {"Authorization": f"Bearer {access_token}"}
 
@@ -232,7 +232,7 @@ def sumup_callback(request):
 
     print(merchant_code)
 
-    # Authenticate or create the user in your Django application
+    # Authenticate or create the user 
     if merchant_code:
         return redirect("dashboard")
     else:

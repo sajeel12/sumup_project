@@ -12,60 +12,59 @@
 
 <div class="main-skills">
     <div class="card">
-
-        <h3 class="card-title">Total Amount</h3>
-        <p id="total_amount">--</p>
-
+        <h3 class="card-title">Total Today</h3>
+        <p id="total_amount_today">--</p>
     </div>
     <div class="card">
         <!-- <i class="fas fa-laptop-code"></i> -->
-        <h3 class="card-title">Amount Last Month</h3>
+        <h3 class="card-title">Total this Month</h3>
         <p id="total_amount_lastmonth">--</p>
 
     </div>
     <div class="card">
-        <h3 class="card-title">Amount Today</h3>
-        <p id="total_amount_today">--</p>
+
+        <h3 class="card-title">Total Donated</h3>
+        <p id="total_amount">--</p>
+
     </div>
 
 </div>
 
 <div class="main-skills">
-    <div class="card">
-
-        <h3 class="card-title">Total Donations</h3>
-        <p id="total_transactions">--</p>
-
-    </div>
-    <div class="card">
-        <h3 class="card-title">Donations last 30 days</h3>
-        <p id="transaction_last_month">--</p>
-    </div>
     <div class="card">
         <!-- <i class="fas fa-laptop-code"></i> -->
         <h3 class="card-title">Donation Last Week</h3>
         <p id="transaction_last_week">--</p>
 
     </div>
+    <div class="card">
+        <h3 class="card-title">Number of transactions this month</h3>
+        <p id="transaction_last_month">--</p>
+    </div>
+    
+    <div class="card">
 
+        <h3 class="card-title">Total number of transactions</h3>
+        <p id="total_transactions">--</p>
+
+    </div>
 </div>
-<div class="main-skills">
-    <div class="graph-card">
+<div class="main-skills" >
+    <div class="graph-card" style="flex-basis: 60%;" >
         <select class="graph-select-left" id="SelectDateRageLineChart" onchange="handleProductSummuryChange()">
             <option value="all">All</option>
             <option value="lastWeek">Last Week</option>
             <option value="last30Days">Last 30 Days</option>
         </select>
 
-        <h3 class="card-title">Transactions </h3><button onclick="get_total_transactions()">get total
-            transaction</button>
+        <h3 class="card-title">Donations </h3>
         <select class="graph-select" id="productSummarySelect" onchange="handleProductSummuryChange()">
 
         </select>
         <canvas id="transactionChart" width="100" height="50"></canvas>
     </div>
 
-    <div class="card" ;" style="justify-content: space-evenly;">
+    <div class="card"  style="justify-content: space-evenly;flex-basis: 40%;">
         <h3 class="card-title">Total Transactions in Selected Campaign</h3>
         <p id="transaction_in_selected_range">--</p>
 
@@ -80,7 +79,7 @@
 
     <div class="graph-card"> <!-- Bar Chart -->
 
-        <h3 class="card-title">Transactions </h3>
+        <h3 class="card-title">Campaigns </h3>
         <select class="graph-select" id="productSummarySelectBar" onchange="handleProductSummuryBarChange()">
             <option value="all">All</option>
             <option value="lastWeek">Last Week</option>
@@ -100,7 +99,7 @@
     </div>
     <div class="card">
 
-        <h3 class="card-title">Failed Donations All Time</h3>
+        <h3 class="card-title">Failed transactions this week</h3>
         <p class="failed-text" id="failed_donations">--</p>
 
     </div>
@@ -123,6 +122,11 @@
 
     <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
     <script>
+
+        window.onload = function () {
+            get_total_transactions();
+        };
+
 
 
         let transaction_loading = document.getElementById('transaction_loading');
@@ -208,7 +212,7 @@
                     });
 
                     // last week failed transactions
-                    var failed_donations_last_week = data?.data?.items.filter(function (transaction) {
+                    var failed_donations_last_week = lastWeekTransactions?.filter(function (transaction) {
                         return transaction.status === 'FAILED';
                     });
 
@@ -223,9 +227,9 @@
                     document.getElementById("transaction_last_week").innerHTML = lastWeekCount;
                     document.getElementById("transaction_last_month").innerHTML = lastMonthCount;
 
-                    document.getElementById("total_amount").innerHTML =  '£ ' + total_amount ;
-                    document.getElementById("total_amount_lastmonth").innerHTML =   '£ ' + total_amount_lastmonth ;
-                    document.getElementById("total_amount_today").innerHTML = '£ ' + total_amount_today ;
+                    document.getElementById("total_amount").innerHTML = '£ ' + total_amount;
+                    document.getElementById("total_amount_lastmonth").innerHTML = '£ ' + total_amount_lastmonth;
+                    document.getElementById("total_amount_today").innerHTML = '£ ' + total_amount_today;
 
                     document.getElementById("failed_donations").innerHTML = failed_donations_last_week.length;
 
@@ -297,7 +301,7 @@
             });
 
             document.getElementById("transaction_in_selected_range").innerHTML = filteredTransactions.length;
-            document.getElementById("donations_in_selected_range").innerHTML =  '£ ' +  total_donation_in_range ;
+            document.getElementById("donations_in_selected_range").innerHTML = '£ ' + total_donation_in_range;
 
             // Call the modified createLineChart function with the filtered transactions
 
@@ -364,7 +368,7 @@
                 data: {
                     labels: xValues,
                     datasets: [{
-                        label: 'Total Amount of Transactions',
+                        label: 'Total Donations',
                         fill: true,
                         lineTension: 0.3,
                         backgroundColor: "rgba(255, 99, 132, 0.2)",

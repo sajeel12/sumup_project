@@ -8,9 +8,13 @@
     <link rel='stylesheet' href="{% static 'style/main.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <title>Masoom Network</title>
+    <!-- Add this to the <head> section of your HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/tagify@4.3.0/dist/tagify.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tagify@4.3.0/dist/tagify.css">
+
 </head>
 
-<body  >
+<body>
     <!-- <button class="dark-mode-btn" onclick="toggleDarkMode()" >Dark MOde </button> -->
     <div class="container">
 
@@ -30,9 +34,9 @@
 
 <script>
     function toggleDarkMode() {
-       var element = document.body;
-       element.classList.toggle("dark-mode");
+        var element = document.body;
+        element.classList.toggle("dark-mode");
     }
-    </script>
+</script>
 
 </html>

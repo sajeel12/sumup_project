@@ -14,7 +14,8 @@
         <input type="email" placeholder="Email" name="email" required>
         <input type="number" placeholder="Telephone" name="telephone" required>
         <input type="text" placeholder="Organisation Name" name="organisation_name" required>
-
+        <input type="text" id="trusteesInput" placeholder="Trustees" data-whitelist="[]" name="trustees">
+        <div id="trusteesTags"></div>
         <input type="text" placeholder="Address" name="address" required>
 
 
@@ -34,7 +35,8 @@
         <!-- {{ form.as_p }} -->
         {% endif %}
 
-        <button id="submitButton" disabled type="submit" > Signup </button>
+        <a href="{% url 'loginto' %}"> Already have a account</a>
+        <button id="submitButton" disabled type="submit"> Signup </button>
         <!-- <p> or </p> -->
 
         <!-- <button onclick="withsumup()" class="with-google-btn"  > Countinuou with Sum up </button> -->
@@ -57,7 +59,8 @@
         <!-- {{ form.as_p }} -->
         {% endif %}
 
-        <button id="submitButton"  type="submit" > Login </button>
+        <a href="{% url 'signup' %}"> Create a new account</a>
+        <button id="submitButton" type="submit"> Login </button>
 
 
     </form>
@@ -87,6 +90,29 @@
         }
 
         confirmPasswordField.addEventListener('input', checkPasswordMatch);
+
+        var trusteesInput = document.getElementById('trusteesInput');
+        var trusteesTags = document.getElementById('trusteesTags');
+
+        var tagify = new Tagify(trusteesInput, {
+            whitelist: [],  // You can prepopulate with suggestions if needed
+            dropdown: {
+                maxItems: 20,           // <- mixumum allowed rendered suggestions
+                enabled: 0,             // <- show suggestions on focus
+                closeOnSelect: false,   // <- do not hide the suggestions dropdown once an item has been selected
+            }
+        });
+
+        // Listen for the "add" event and update the tags container
+        tagify.on('add', function (e) {
+            trusteesTags.innerHTML = tagify.value.map(tag => `<span class="tag">${tag}</span>`).join('');
+        });
+
+        // Listen for the "remove" event and update the tags container
+        tagify.on('remove', function (e) {
+            trusteesTags.innerHTML = tagify.value.map(tag => `<span class="tag">${tag}</span>`).join('');
+        });
+
     });
 </script>
 
