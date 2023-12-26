@@ -43,39 +43,39 @@ def create_donor(request):
 @api_view(["POST"])
 def verify_user(request):
     merchant_code = request.data.get("merchant_code")
-    access_token = request.data.get("access_token")
+    # access_token = request.data.get("access_token")
 
-    user = User.objects.get(merchant_code=merchant_code)
+    # user = User.objects.get(merchant_code=merchant_code)
 
-    print(access_token, " <--------------------- access_token  \n \n \n  ")
-    print(user.sumup_access_token, " <--------------------- access_token  \n \n \n  ")
+    # print(access_token, " <--------------------- access_token  \n \n \n  ")
+    # print(user.sumup_access_token, " <--------------------- access_token  \n \n \n  ")
 
 
 
     # Request to Sumup API
-    sumup_api_url = "https://api.sumup.com/v0.1/me"
-    headers = {"Authorization": f"Bearer {access_token}"}
+    # sumup_api_url = "https://api.sumup.com/v0.1/me"
+    # headers = {"Authorization": f"Bearer {access_token}"}
 
-    try:
-        response = requests.get(sumup_api_url, headers=headers)
-        response.raise_for_status()
-        user_data = response.json()
-    except requests.exceptions.RequestException as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    # try:
+    #     response = requests.get(sumup_api_url, headers=headers)
+    #     response.raise_for_status()
+    #     user_data = response.json()
+    # except requests.exceptions.RequestException as e:
+    #     return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Verify merchant_code (assuming it's present in user_data)
-    print(user_data, " <--------------------- user_data  \n \n \n  " )
-    merchant_code_res = user_data['merchant_profile']['merchant_code']
+    # # Verify merchant_code (assuming it's present in user_data)
+    # print(user_data, " <--------------------- user_data  \n \n \n  " )
+    # merchant_code_res = user_data['merchant_profile']['merchant_code']
 
 
-    print(merchant_code_res, " <--------------------- merchant_code_res  \n \n \n  " )
+    # print(merchant_code_res, " <--------------------- merchant_code_res  \n \n \n  " )
 
     # Assuming 'merchant_code' is a field in your User model
     try:
 
         user = User.objects.get(merchant_code=merchant_code)
-        if not user.merchant_code == merchant_code_res:
-            return Response({"status": True}, status=status.HTTP_200_OK)
+        # if not user.merchant_code == merchant_code_res:
+        #     return Response({"status": True}, status=status.HTTP_200_OK)
 
         # Delete existing tokens for the user
         Token.objects.filter(user=user).delete()
