@@ -43,7 +43,8 @@ def create_donor(request):
 @api_view(["POST"])
 def verify_user(request):
     merchant_code = request.data.get("merchant_code")
-    device_id=request.data.get("device_id", ""),
+    device_id = request.data.get("device_id")
+    print(device_id, merchant_code,  '------------------device id')
 
     # access_token = request.data.get("access_token")
 
@@ -84,6 +85,7 @@ def verify_user(request):
         device = Device.objects.filter(user=user, device_id=device_id ).first()
 
         if not device:
+            print('<================ in device if ================>')
             # If a device doesn't exist, create a new one
              # Implement this function to capture device info
             device = Device.objects.create(
