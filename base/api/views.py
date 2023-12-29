@@ -72,7 +72,7 @@ def verify_user(request):
 
     # Assuming 'merchant_code' is a field in your User model
     try:
-
+        
         user = User.objects.get(merchant_code=merchant_code)
         # if not user.merchant_code == merchant_code_res:
         #     return Response({"status": True}, status=status.HTTP_200_OK)
