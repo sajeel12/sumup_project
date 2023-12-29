@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 from .serializers import UserLoginSerializer, DonorSerializer
 from django.contrib.auth import authenticate
-from base.models import User
+from base.models import User, Device
 import requests
 from django.shortcuts import get_object_or_404
 
@@ -43,6 +43,8 @@ def create_donor(request):
 @api_view(["POST"])
 def verify_user(request):
     merchant_code = request.data.get("merchant_code")
+    device_id=request.data.get("device_id", ""),
+
     # access_token = request.data.get("access_token")
 
     # user = User.objects.get(merchant_code=merchant_code)
@@ -72,10 +74,31 @@ def verify_user(request):
 
     # Assuming 'merchant_code' is a field in your User model
     try:
-        
+
         user = User.objects.get(merchant_code=merchant_code)
         # if not user.merchant_code == merchant_code_res:
         #     return Response({"status": True}, status=status.HTTP_200_OK)
+
+        # -=====================================================================================================================================
+                # Check if the user already has a device with the given merchant_code
+        device = Device.objects.filter(user=user, device_id=device_id ).first()
+
+        if not device:
+            # If a device doesn't exist, create a new one
+             # Implement this function to capture device info
+            device = Device.objects.create(
+                user=user,
+                model=request.data.get("model"),
+                manufacturer=request.data.get("manufacturer"),
+                brand=request.data.get("brand"),
+                product=request.data.get("product"),
+                display_resolution=request.data.get("display_resolution"),
+                android_version=request.data.get("android_version"),
+                device_id=request.data.get("device_id"),
+                country_location=request.data.get("country_location"),
+                location_cordinates=request.data.get("location_cordinates"),
+            )
+# ======================================================================================================================================
 
         # Delete existing tokens for the user
         Token.objects.filter(user=user).delete()

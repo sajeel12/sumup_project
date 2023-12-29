@@ -33,6 +33,25 @@ class User(AbstractUser):
         return self.email
 
 
+class Device(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,  related_name='devices')
+    model = models.CharField(max_length=255)
+    manufacturer = models.CharField(max_length=255)
+    brand = models.CharField(max_length=255)
+    product = models.CharField(max_length=255)
+    display_resolution = models.CharField(max_length=255)
+    android_version = models.CharField(max_length=255)
+    device_id = models.CharField(max_length=255, unique=True)
+    device_type = models.CharField(max_length=255)
+    country_location = models.CharField(max_length=255, null=True, blank=True)
+    location_cordinates = models.CharField(max_length=255, blank=True, null=True)
+
+    # Add any other fields related to the device as needed
+
+    def __str__(self):
+        return f"{self.user.email} - {self.merchant_code} - {self.model}"
+
+
 class Donor(models.Model):
     title = models.CharField(max_length=255)
     firstName = models.CharField(max_length=255)
@@ -46,3 +65,5 @@ class Donor(models.Model):
     merchantCode = models.CharField(max_length=255, null=True, blank=True)
     productInformation = models.TextField(null=True, blank=True)
     subscribe = models.BooleanField(default=False)
+
+
