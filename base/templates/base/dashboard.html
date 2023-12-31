@@ -141,6 +141,9 @@
 
 
         function get_total_transactions() {
+            total_amount = 0;
+            total_amount_lastmonth = 0;
+            total_amount_today = 0;
 
             console.log('in total transactions')
             transaction_loading.style.display = 'block';
@@ -246,7 +249,7 @@
         }
 
 
-        get_total_transactions();
+        // get_total_transactions();
 
         function product_summury() {
             const productSummaries = transactions.map(transaction => transaction.product_summary); // lower case problem
