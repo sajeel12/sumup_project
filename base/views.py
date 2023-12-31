@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 # from django.contrib.auth.models import User
-from .models import Donor, User
+from .models import Donor, User, Device
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from django.http import HttpResponse, JsonResponse
@@ -275,9 +275,12 @@ def refresh_access_token(refresh_token,user):
     
     
 
-
+@login_required(login_url="loginto")
 def reports(request):
     return render(request, "base/reports.html")
+
+def devices(request):
+    return render(request, "base/devices.html")
 
 @login_required(login_url="loginto")
 def user_management(request):
@@ -321,6 +324,13 @@ def get_users(request):
     else:
         return JsonResponse({"data": "Not Authorized"})
 
+# @login_required(login_url="loginto")
+def get_devices(request):
+    devices = Device.objects.all()
+    print(devices)
+    devices =  list(devices.values())
+    
+    return JsonResponse({"devices": devices})
 
 @login_required(login_url="loginto")
 def get_total_transactions(request):

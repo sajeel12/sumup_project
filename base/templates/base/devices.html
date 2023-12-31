@@ -1,0 +1,93 @@
+{% extends "main.html" %} 
+{% block content %}
+{% load static %}
+
+<img id="transaction_loading" src=" {% static 'images/loading.gif' %} " height="25px" style="display: none;" alt="">
+
+<div class="main-top">
+    <!-- <h5> {{username}} </h5> -->
+</div>
+
+
+
+<div class="main-skills">
+    <div class="card" style="align-items: unset;">
+
+        <h4> Connected Devices</h4>
+        <div class="card-body">
+            <table class="table" id="userTable">
+                <thead>
+                    <tr class="table-row">
+                        <th scope="col">Device Id</th>
+                        <th scope="col">Device Id</th>
+                        <th scope="col">Manufacturer</th>
+                        <th scope="col">Device Type</th>
+  
+                        <!-- <th>Actions</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// /////////////////////////// 2nd table ///////////////////////////////
+
+function getDevices() {
+            fetch('/get_devices/')  // Replace with the actual URL for your view
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Handle the JSON response data
+                    // transactions = data.data.items
+
+                    console.log(data.devices, 'devices')
+                    updateTable(data.devices);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function updateTable(devices) {
+            const tableBody = document.querySelector('#userTable tbody');
+            const table = document.querySelector('#userTable');
+
+            tableBody.innerHTML = '';  // Clear existing table rows
+            if (devices.length !== 0) {
+
+                console.log(devices, "devices");
+                devices.forEach((device, index) => {
+                    const row = tableBody.insertRow(index);
+                    row.insertCell(0).textContent = index + 1;
+                    row.insertCell(1).textContent = device.device_id;
+                    row.insertCell(2).textContent = device.manufacturer;
+                    row.insertCell(3).textContent = device.android_version;
+                    // row.insertCell(10).innerHTML = `<td class="table-actions" >
+                    //         <button onclick="approvalAction(true )" style="background-color: rgb(0, 255, 68);color: black;" > Approve</button>
+                    //         <button onclick="approvalAction(false)" > Reject</button>
+                    //     </td>
+                    //     `;
+
+                    // Add more cells as needed
+                });
+            }
+            else {
+                table.innerHTML = '<h5>No devices</h5>';
+            }
+        }
+
+        getDevices();
+
+
+</script>
+{% endblock %}

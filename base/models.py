@@ -49,8 +49,7 @@ class Device(models.Model):
     # Add any other fields related to the device as needed
 
     def __str__(self):
-        return f"{self.user.email} - {self.merchant_code} - {self.model}"
-
+        return self.device_id
 
 class Donor(models.Model):
     title = models.CharField(max_length=255)

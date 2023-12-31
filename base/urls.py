@@ -16,12 +16,14 @@ urlpatterns = [
     
 
     path('reports/', views.reports, name='reports'),
+    path('devices/', views.devices, name='devices'),
     path('usermanagement/', views.user_management, name='user_management'),
 
 
     # apis
     path('get-users/', views.get_users, name='get_users'),
     path('donors/', views.get_donors, name='donors'),
+    path('get_devices/', views.get_devices, name='get_devices'),
     path('approve-user/', views.approve_user, name='approve_users'),
 
     # path('download-excel/<str:start_date>/<str:end_date>/', views.download_excel, name='download_excel'),
