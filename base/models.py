@@ -52,17 +52,19 @@ class Device(models.Model):
         return self.device_id
 
 class Donor(models.Model):
-    title = models.CharField(max_length=255)
-    firstName = models.CharField(max_length=255)
-    lastName = models.CharField(max_length=255)
-    address = models.CharField(max_length=255)
-    postcode = models.CharField(max_length=10)
-    phoneNumber = models.CharField(max_length=15)
-    emailAddress = models.EmailField()
-    transactionCode = models.CharField(max_length=255, null=True, blank=True)
-    amountInPounds = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    merchantCode = models.CharField(max_length=255, null=True, blank=True)
-    productInformation = models.TextField(null=True, blank=True)
-    subscribe = models.BooleanField(default=False)
+    title = models.CharField(max_length=255 , null=True, blank=True)
+    first_name = models.CharField(max_length=255 , null=True, blank=True)
+    last_name = models.CharField(max_length=255 , null=True, blank=True)
+    full_name = models.CharField(max_length=255 , blank=False, null=False, default='no') 
+    address = models.CharField(max_length=255 , null=False, default='no', blank=False)
+    postcode = models.CharField(max_length=10 , null=False, default='no', blank=False)
+    phone_number = models.CharField(max_length=15 , null=True, blank=True)
+    email_address = models.EmailField( null=True, blank=True)
+    transaction_code = models.CharField(max_length=255, null=False, default='no', blank=False)
+    amount_in_pounds = models.DecimalField(max_digits=10, decimal_places=2, null=False, default=2 ,blank=False)
+    merchant_code = models.CharField(max_length=255, null=True, blank=True)
+    product_information = models.TextField(null=True, blank=True)
+    timestamp = models.CharField(max_length=255, null=False, default='no', blank=False)
+    # subscribe = models.BooleanField(default=False)
 
 
