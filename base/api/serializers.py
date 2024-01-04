@@ -24,6 +24,7 @@ class DonorSerializer(serializers.ModelSerializer):
         "address",
         "postcode",
         "transaction_code",
+        "amount_in_pounds",
         "timestamp",
     ]  # Add your required fields here
 

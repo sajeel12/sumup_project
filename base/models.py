@@ -61,7 +61,7 @@ class Donor(models.Model):
     phone_number = models.CharField(max_length=15 , null=True, blank=True)
     email_address = models.EmailField( null=True, blank=True)
     transaction_code = models.CharField(max_length=255, null=False,  blank=False)
-    amount_in_pounds = models.DecimalField(max_digits=10, decimal_places=2, null=False, default=2 ,blank=False)
+    amount_in_pounds = models.DecimalField(max_digits=10, decimal_places=2, null=False ,blank=False)
     merchant_code = models.CharField(max_length=255, null=True, blank=True)
     product_information = models.TextField(null=True, blank=True)
     timestamp = models.CharField(max_length=255, null=False, blank=False)
