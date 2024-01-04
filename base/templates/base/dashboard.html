@@ -33,8 +33,9 @@
 <div class="main-skills">
     <div class="card">
         <!-- <i class="fas fa-laptop-code"></i> -->
-        <h3 class="card-title">Donation Last Week</h3>
-        <p id="transaction_last_week">--</p>
+        <!-- donation last week -->
+        <h3 class="card-title">No of Transactions Today</h3> 
+        <p id="transaction_today">--</p>
 
     </div>
     <div class="card">
@@ -135,6 +136,7 @@
         var total_transactions = [];
         var last_week_transactions = [];
         var last_month_transactions = [];
+        var today_transactions = [];
         var total_amount = 0;
         var total_amount_lastmonth = 0;
         var total_amount_today = 0;
@@ -157,12 +159,12 @@
                 })
                 .then(data => {
                     console.log("Data received:", data);
-                    transactions = data.data.items;
+                    alltransactions = data.data.items;
 
-                    success_transactions = transactions.filter(function (transaction) {
+                    success_transactions = alltransactions.filter(function (transaction) {
                         return transaction.status === 'SUCCESSFUL';
                     });
-                    transactions = success_transactions
+                    transactions = success_transactions;
                     // Update the HTML on your page with the received data
                     const totalCount = Object.keys(transactions).length;
 
@@ -179,7 +181,14 @@
                     });
                     console.log(lastWeekTransactions, 'lastWeekTransactions')
                     const lastWeekCount = Object.keys(lastWeekTransactions).length;
-
+                    // all last week data
+                    var lastWeekStart = new Date();
+                    lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+                    var alllastWeekTransactions = alltransactions.filter(function (transaction) {
+                        var transactionDate = new Date(transaction.timestamp);
+                        return transactionDate > lastWeekStart;
+                    });
+                    // ////////////////////////
                     //  last 30 data
                     var lastMonthStart = new Date();
                     lastMonthStart.setDate(lastMonthStart.getDate() - 30);
@@ -198,6 +207,8 @@
                         var transactionDate = new Date(transaction.timestamp);
                         return transactionDate >= todayStart;
                     });
+                    const todayTransactionsCount = Object.keys(todayTransactions).length;
+
 
 
                     // last 30 day total amount
@@ -215,7 +226,7 @@
                     });
 
                     // last week failed transactions
-                    var failed_donations_last_week = lastWeekTransactions?.filter(function (transaction) {
+                    var failed_donations_last_week = alllastWeekTransactions?.filter(function (transaction) {
                         return transaction.status === 'FAILED';
                     });
 
@@ -227,7 +238,7 @@
                     //  displaying data
                     transaction_loading.style.display = 'none'
                     document.getElementById("total_transactions").innerHTML = totalCount;
-                    document.getElementById("transaction_last_week").innerHTML = lastWeekCount;
+                    document.getElementById("transaction_today").innerHTML = todayTransactionsCount;
                     document.getElementById("transaction_last_month").innerHTML = lastMonthCount;
 
                     document.getElementById("total_amount").innerHTML = '£ ' + total_amount;
@@ -248,7 +259,7 @@
                 });
         }
 
-
+ 
         // get_total_transactions();
 
         function product_summury() {

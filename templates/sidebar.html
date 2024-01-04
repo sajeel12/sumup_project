@@ -1,10 +1,10 @@
+{% load static %}
 <nav>
   <ul>
     <li><a href="#" class="logo">
-        <img height="30px" onclick="toggleSidebar()"
-          src="https://lh3.googleusercontent.com/p/AF1QipOI7WW5FtaeY9fEjt0Nn7CIKbF57BSv5qmds_Rk=w960-h960-n-o-v1"
-          alt="">
-        <span class="nav-item">theOlivePod</span>
+        <img  onclick="toggleSidebar()"
+          src="{% static 'images/olivepod.webp' %}"
+          alt="theolivepodimg">
       </a></li>
     <li><a href="{% url 'dashboard' %}">
         <i class="fas fa-home"></i>

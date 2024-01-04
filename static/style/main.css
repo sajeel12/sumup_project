@@ -86,15 +86,15 @@ nav {
 }
 
 .logo {
-  text-align: center;
   display: flex;
+  justify-content: start;
   margin: 10px 0 0 10px;
 }
 
 .logo img {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
+  width: auto;
+  height: 30px;
+  /* border-radius: 50%; */
 }
 
 .logo span {
