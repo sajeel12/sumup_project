@@ -175,9 +175,10 @@ a:hover {
 }
 
 .card-title {
-  background-color: #e5ecff;
-  padding: 2px 10px;
-  border-radius: 10px;
+  /* background-color: #e2e2e2; */
+  padding: 1px 10px;
+  /* border-radius: 10px; */
+  border-bottom: 1px solid rgba(188, 204, 255, 0.808);
 }
 
 .main-skills .card {
