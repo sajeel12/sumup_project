@@ -294,7 +294,7 @@ def user_management(request):
 
 @login_required(login_url="loginto")
 def get_donors(request):
-    donors = Donor.objects.all()
+    donors = Donor.objects.all().order_by("-id")
     # donors = list(donors.values())
     context = {"donors": donors}
     return render(request, "base/donors.html", context)
