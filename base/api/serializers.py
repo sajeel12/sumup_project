@@ -20,12 +20,13 @@ class UserLoginSerializer(serializers.Serializer):
 
 class DonorSerializer(serializers.ModelSerializer):
     required_fields = [
-        "full_name",
+        "first_name",
+        "last_name",
         "address",
         "postcode",
         "transaction_code",
         "amount_in_pounds",
-        "timestamp",
+        # "timestamp",
     ]  # Add your required fields here
 
     class Meta:

@@ -16,6 +16,9 @@
             <table class="table" id="userTable">
                 <thead>
                     <tr class="table-row">
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+
                         <th scope="col">Email</th>
                         <th scope="col">Transaction Code</th>
                         <th scope="col">Amount In Pounds</th>
@@ -32,6 +35,9 @@
                 <tbody>
                     {% for donor in donors %}
                     <tr>
+                        <td> {{donor.first_name}} </td>
+                        <td> {{donor.last_name}} </td>
+
                         <td> {{donor.email_address}} </td>
                         <td> {{donor.transaction_code}} </td>
                         <td> {{donor.amount_in_pounds}} </td>

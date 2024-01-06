@@ -64,7 +64,7 @@ class Donor(models.Model):
     amount_in_pounds = models.DecimalField(max_digits=10, decimal_places=2, null=False ,blank=False)
     merchant_code = models.CharField(max_length=255, null=True, blank=True)
     product_information = models.TextField(null=True, blank=True)
-    timestamp = models.CharField(max_length=255, null=False, blank=False)
+    timestamp = models.CharField(max_length=255, null=True, blank=True)
     subscribe = models.BooleanField(default=False)
 
 

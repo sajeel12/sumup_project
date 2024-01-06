@@ -54,20 +54,30 @@ def loginto(request):
         try:
             user = User.objects.get(email=email)
             print(user, "<-- user")
-            user = authenticate(request, email=email, password=password)
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return redirect("dashboard")
+            if user.sumup_access_token:
+                user = authenticate(request, email=email, password=password)
+                if user is not None:
+                    if user.is_active:
+                        login(request, user)
+                        return redirect("dashboard")
+                    else:
+                        msg = "Account Pending for Approval"
                 else:
-                    msg = "Account Pending for Approval"
+                    msg = "Account not approved"
             else:
-                msg = "Account not approved"
-        except:
-            msg = "user not Exists "
+                print("access token not found   hahaha")
+                return connect_sumup(request)  # Redirect here
+        except User.DoesNotExist:
+            msg = "User not exists"
+    
     context = {"page": page, "msg": msg}
     return render(request, "base/login_signup.html", context)
 
+def connect_sumup(request):
+    print("in connect sumup")
+    page = 'sumup_signup'
+    context = {"page": page}
+    return render(request, "base/login_signup.html", context)
 
 def signupUser(request):
     if request.user.is_authenticated:

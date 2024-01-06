@@ -19,7 +19,7 @@
     <!-- <button class="dark-mode-btn" onclick="toggleDarkMode()" >Dark MOde </button> -->
     <div class="container">
 
-        {% if page != 'login' and page != 'signup' %}
+        {% if user.is_authenticated and page != 'sumup_signup' %}
         {% include "sidebar.html" %}
         {% endif %}
         <section class="main">

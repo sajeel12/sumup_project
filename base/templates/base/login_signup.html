@@ -67,8 +67,23 @@
 
     {% endif %}
 
+    {% if page == 'sumup_signup' %}
+    <a href="{% url 'sumup_login' %}">
+        <b> Connect Sumup </b>
+    </a>
+
+    
+
+    {% endif  %}
+
 </div>
 <script>
+
+function connect_sumup() {
+
+        window.location.href = "/sumup/login";
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         var passwordField = document.getElementById('password');
         var confirmPasswordField = document.getElementById('confirmPassword');
