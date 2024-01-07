@@ -22,6 +22,7 @@
                         <th scope="col">Device Id</th>
                         <th scope="col">Manufacturer</th>
                         <th scope="col">Device Type</th>
+                        <th scope="col">Country</th>
   
                         <!-- <th>Actions</th> -->
                     </tr>
@@ -78,6 +79,7 @@ function getDevices() {
                     row.insertCell(1).textContent = device.device_id;
                     row.insertCell(2).textContent = device.manufacturer;
                     row.insertCell(3).textContent = device.android_version;
+                    row.insertCell(4).textContent = device.country_location;
                     // row.insertCell(10).innerHTML = `<td class="table-actions" >
                     //         <button onclick="approvalAction(true )" style="background-color: rgb(0, 255, 68);color: black;" > Approve</button>
                     //         <button onclick="approvalAction(false)" > Reject</button>
