@@ -55,7 +55,7 @@ class Donor(models.Model):
     title = models.CharField(max_length=255 , null=True, blank=True)
     first_name = models.CharField(max_length=255 , null=True, blank=True)
     last_name = models.CharField(max_length=255 , null=True, blank=True)
-    full_name = models.CharField(max_length=255 , blank=False, null=False) 
+    full_name = models.CharField(max_length=255 , blank=True, null=True) 
     address = models.CharField(max_length=255 , null=False, blank=False)
     postcode = models.CharField(max_length=10 , null=False, blank=False)
     phone_number = models.CharField(max_length=15 , null=True, blank=True)
